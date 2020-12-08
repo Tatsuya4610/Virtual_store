@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:virtual_store_flutter/common/custom_drawer/custom_drawer_header.dart';
 import 'package:virtual_store_flutter/model/page_manager.dart';
 import 'package:virtual_store_flutter/model/user_manager.dart';
 import 'package:virtual_store_flutter/screen/base/base_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:virtual_store_flutter/screen/login/login_screen.dart';
+import 'package:virtual_store_flutter/screen/signup/signup_screen.dart';
 
 void main() => runApp(
       MultiProvider(
@@ -32,7 +34,10 @@ class MyApp extends StatelessWidget {
           appBarTheme: AppBarTheme(
             elevation: 0,
           )),
-      home: LoginScreen(),
+      home: BaseScreen(),
+      routes: {
+        SignUPScreen.id : (context) => SignUPScreen(),
+      },
     );
   }
 }

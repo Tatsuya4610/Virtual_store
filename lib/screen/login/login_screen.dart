@@ -3,6 +3,7 @@ import 'package:virtual_store_flutter/helper/valid.dart';
 import 'package:provider/provider.dart';
 import 'package:virtual_store_flutter/model/user_manager.dart';
 import 'package:virtual_store_flutter/model/user.dart';
+import 'package:virtual_store_flutter/screen/signup/signup_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -16,6 +17,14 @@ class LoginScreen extends StatelessWidget {
       key: _scaffoldKey,
       appBar: AppBar(
         title: Text('ログイン画面'),
+        actions: <Widget>[
+          FlatButton(
+            onPressed: () {
+              Navigator.of(context).pushNamed(SignUPScreen.id);
+            },
+            child: Text('アカウント作成',style: TextStyle(color: Colors.white),),
+          ),
+        ],
       ),
       body: Center(
         child: Card(
@@ -29,7 +38,8 @@ class LoginScreen extends StatelessWidget {
                   padding: EdgeInsets.all(16),
                   children: <Widget>[
                     TextFormField(
-                      enabled: !userManager.loading, //falseの場合入力不可。ログインボタンを押した後　firebaseログイン確認中は入力不可。
+                      enabled: !userManager
+                          .loading, //falseの場合入力不可。ログインボタンを押した後　firebaseログイン確認中は入力不可。
                       controller: _emailController,
                       decoration: InputDecoration(hintText: 'メールアドレス'),
                       keyboardType: TextInputType.emailAddress,
@@ -49,7 +59,9 @@ class LoginScreen extends StatelessWidget {
                       autocorrect: false, //キーボード上に予測変換を出さない。
                       obscureText: true, //セキュリティー、非表示。
                       validator: (pass) {
-                        if (pass.isEmpty || pass.length < 6) {
+                        if (pass.isEmpty) {
+                          return '入力してください';
+                        } else if (pass.length < 6) {
                           return '6文字以上入力してください';
                         }
                         return null;
@@ -59,33 +71,46 @@ class LoginScreen extends StatelessWidget {
                     SizedBox(
                       height: 44,
                       child: RaisedButton(
-                        onPressed: userManager.loading ? null : () { //ログイン確認中は使用不可。
-                          _formKey.currentState.validate(); //validateを確認。
-                          userManager.signIn(
-                                //firebaseにサインイン。
-                                user: User(
-                                  email: _emailController.text.trim(),
-                                  password: _passwordController.text.trim(),
-                                ),
-                                onFail: (error) {
-                                  //日本語変換したエラーを受け取り。
-                                  _scaffoldKey.currentState.showSnackBar(
-                                    SnackBar(
-                                      //エラーメッセージ画面。
-                                      backgroundColor: Colors.red,
-                                      content: Text(error),
-                                    ),
-                                  );
-                                },
-                                onSuccess: () {
-                                  //ログイン成功した場合に返ってくる。
-                                  print('成功');
-                                },
-                              );
-                        },
-                        child: userManager.loading ? CircularProgressIndicator(valueColor: AlwaysStoppedAnimation(Colors.white),) : Text('ログイン'),
+                        onPressed: userManager.loading
+                            ? null
+                            : () {
+                                //ログイン確認中は使用不可。
+                                _formKey.currentState.validate(); //validateを確認。
+                                if (_passwordController.text.isEmpty) { //これがないとなぜかパスワードが間違えてますとSnackBarが出る。
+                                  return;
+                                }
+                                userManager.signIn(
+                                  //firebaseにサインイン。
+                                  user: User(
+                                    email: _emailController.text.trim(),
+                                    password: _passwordController.text.trim(),
+                                  ),
+                                  onFail: (error) {
+                                    //日本語変換したエラーを受け取り。
+                                    _scaffoldKey.currentState.showSnackBar(
+                                      SnackBar(
+                                        //エラーメッセージ画面。
+                                        backgroundColor: Colors.red,
+                                        content: Text(error),
+                                      ),
+                                    );
+                                  },
+                                  onSuccess: () {
+                                    //ログイン成功した場合に返ってくる。
+                                    print('成功');
+                                  },
+                                );
+                              },
+                        child: userManager.loading
+                            ? CircularProgressIndicator(
+                                valueColor:
+                                    AlwaysStoppedAnimation(Colors.white),
+                              )
+                            : Text('ログイン'),
                         color: Theme.of(context).primaryColor,
-                        disabledColor: Theme.of(context).primaryColor.withAlpha(100), //ボタン無効中の色。
+                        disabledColor: Theme.of(context)
+                            .primaryColor
+                            .withAlpha(100), //ボタン無効中の色。
                         textColor: Colors.white,
                       ),
                     ),
@@ -96,7 +121,9 @@ class LoginScreen extends StatelessWidget {
                 alignment: Alignment.centerRight,
                 child: FlatButton(
                   padding: EdgeInsets.zero,
-                  onPressed: () {},
+                  onPressed: () {
+                    print(_emailController.text);
+                  },
                   child: Text('パスワードを忘れた'),
                 ),
               ),

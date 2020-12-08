@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,7 +11,7 @@ class UserManager extends ChangeNotifier {
   }
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  FirebaseUser _user;
+  User user;
   bool _loading = false;
   bool get loading => _loading;
 
@@ -18,14 +19,39 @@ class UserManager extends ChangeNotifier {
     loading = true;
     try {
       final result = await _auth.signInWithEmailAndPassword(
+        //firebaseにサインイン
         email: user.email,
         password: user.password,
       );
-      _user = result.user;
+
+      await _loadCurrentUser(firebaseUser: result.user);
 
       onSuccess(); //成功した場合。
     } on PlatformException catch (error) {
-      onFail(getErrorString(error.code)); //失敗した場合はgetErrorStringにerror.codeを渡して日本語変換し出力。
+      onFail(
+        //失敗した場合はgetErrorStringにerror.codeを渡して日本語変換し出力。
+        getErrorString(error.code),
+      );
+    }
+    loading = false;
+  }
+
+  Future<void> singUp({User user, Function onFail, Function onSuccess}) async {
+    loading = true;
+    try {
+      final result = await _auth.createUserWithEmailAndPassword(
+        //firebaseに登録。
+        email: user.email,
+        password: user.password,
+      );
+      user.id = result.user.uid; //user.uid渡し。
+      this.user = user; //受け取ったuserをuserへ上書き。
+      await user.saveData(); //ユーザーのデーターをfirebaseに追加。
+      onSuccess();
+    } on PlatformException catch (error) {
+      onFail(
+        getErrorString(error.code),
+      );
     }
     loading = false;
   }
@@ -35,13 +61,17 @@ class UserManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> _loadCurrentUser() async {
-    final FirebaseUser currentUser = await _auth.currentUser(); //ログイン中のアカウント。
+  Future<void> _loadCurrentUser({FirebaseUser firebaseUser}) async {
+    final FirebaseUser currentUser =
+        await _auth.currentUser() ?? firebaseUser; //ログイン中のアカウント。この2つどちらか。
     if (currentUser != null) {
-      _user = currentUser;
-      print(_user.uid);
+      final DocumentSnapshot docUser = await Firestore.instance
+          .collection('users')
+          .document(currentUser.uid)
+          .get();//ログイン中のアカウントのデータを取得。
+      user = User.formDocument(docUser);//取得したデーターをformDocumentに登録。
+      notifyListeners();
     }
-    notifyListeners();
   }
 
 }
