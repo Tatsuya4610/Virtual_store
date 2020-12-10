@@ -7,14 +7,12 @@ import 'package:virtual_store_flutter/model/user_manager.dart';
 class SignUPScreen extends StatelessWidget {
   static const id = 'SignUPScreen';
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
   final User _user = User();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
-    final bool loading = Provider.of<UserManager>(context).loading;
+    final bool loading = Provider.of<UserManager>(context).loading; //Consumerではないバージョン。LoginはConsumer使用。
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
@@ -131,7 +129,9 @@ class SignUPScreen extends StatelessWidget {
                                   ),
                                 );
                               },
-                              onSuccess: () {},
+                              onSuccess: () {
+                                Navigator.of(context).pop();
+                              },
                             );
                       }
                     },

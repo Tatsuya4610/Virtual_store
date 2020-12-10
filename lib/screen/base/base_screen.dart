@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:virtual_store_flutter/common/custom_drawer/custom_drawer.dart';
 import 'package:virtual_store_flutter/model/page_manager.dart';
+import 'package:virtual_store_flutter/screen/products/products_screen.dart';
 
 class BaseScreen extends StatelessWidget {
   final PageController _pageController = PageController();
@@ -18,6 +19,7 @@ class BaseScreen extends StatelessWidget {
             title: Text('Home'),
           ),
         ),
+        ProductsScreen(),
         Scaffold(
           drawer: CustomDrawer(),
           appBar: AppBar(

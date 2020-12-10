@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:virtual_store_flutter/common/custom_drawer/custom_drawer_header.dart';
 import 'package:virtual_store_flutter/model/page_manager.dart';
+import 'package:virtual_store_flutter/model/product_manager.dart';
 import 'package:virtual_store_flutter/model/user_manager.dart';
 import 'package:virtual_store_flutter/screen/base/base_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:virtual_store_flutter/screen/login/login_screen.dart';
+import 'package:virtual_store_flutter/screen/product/product_screen.dart';
 import 'package:virtual_store_flutter/screen/signup/signup_screen.dart';
 
 void main() => runApp(
@@ -15,6 +16,11 @@ void main() => runApp(
           ),
           ChangeNotifierProvider(
             create: (_) => UserManager(),
+            lazy: false, //遅延実行しない。
+          ),
+          ChangeNotifierProvider(
+            create: (_) => ProductManager(),
+            lazy: false,
           ),
         ],
         child: MyApp(),
@@ -36,7 +42,9 @@ class MyApp extends StatelessWidget {
           )),
       home: BaseScreen(),
       routes: {
-        SignUPScreen.id : (context) => SignUPScreen(),
+        SignUPScreen.id: (context) => SignUPScreen(),
+        LoginScreen.id: (context) => LoginScreen(),
+        ProductScreen.id : (context) => ProductScreen(),
       },
     );
   }

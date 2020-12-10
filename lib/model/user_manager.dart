@@ -15,6 +15,8 @@ class UserManager extends ChangeNotifier {
   bool _loading = false;
   bool get loading => _loading;
 
+  bool get islLogin => user != null; //userの情報があるならログイン状態。
+
   Future<void> signIn({User user, Function onFail, Function onSuccess}) async {
     loading = true;
     try {
@@ -60,6 +62,13 @@ class UserManager extends ChangeNotifier {
     _loading = value;
     notifyListeners();
   }
+
+  void signOut() {
+    _auth.signOut();
+    user = null;
+    notifyListeners();
+  }
+
 
   Future<void> _loadCurrentUser({FirebaseUser firebaseUser}) async {
     final FirebaseUser currentUser =

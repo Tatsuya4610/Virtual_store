@@ -6,6 +6,7 @@ import 'package:virtual_store_flutter/model/user.dart';
 import 'package:virtual_store_flutter/screen/signup/signup_screen.dart';
 
 class LoginScreen extends StatelessWidget {
+  static const id = 'LoginScreen';
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final TextEditingController _emailController = TextEditingController();
@@ -96,8 +97,7 @@ class LoginScreen extends StatelessWidget {
                                     );
                                   },
                                   onSuccess: () {
-                                    //ログイン成功した場合に返ってくる。
-                                    print('成功');
+                                    Navigator.of(context).pop();
                                   },
                                 );
                               },
