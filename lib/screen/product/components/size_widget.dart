@@ -12,11 +12,14 @@ class SizeWidget extends StatelessWidget {
     final product = context.watch<Product>();
     final selected = size == product.selectedSize;
     Color color;
-    if (!size.hasStock) { //在庫なし。
+    if (!size.hasStock) {
+      //在庫なし。
       color = Colors.red.withAlpha(50);
-    } else if(selected) { //選択中。
+    } else if (selected) {
+      //選択中。
       color = Theme.of(context).primaryColor;
-    } else { //その他。
+    } else {
+      //その他。
       color = Colors.grey;
     }
 
@@ -45,10 +48,13 @@ class SizeWidget extends StatelessWidget {
             ),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 13),
-              child: Text('¥${size.price}',style: TextStyle(
-                color: color,
-              ),),
-            )
+              child: Text(
+                '¥${size.price}',
+                style: TextStyle(
+                  color: color,
+                ),
+              ),
+            ),
           ],
         ),
       ),

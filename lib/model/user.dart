@@ -15,7 +15,12 @@ class User {
   String password;
   String confirmPassword;
 
-  Future<void> saveData() async { //ユーザーidごとにデーターを保存。
+  DocumentReference get fireStoreRef => Firestore.instance.document('user/$id'); //user別のドキュメントを取得。
+
+  CollectionReference get cartReference => fireStoreRef.collection('cart'); // ユーザー別のカート。
+
+  Future<void> saveData() async {
+    //ユーザーidごとにデーターを保存。
     try {
       await Firestore.instance.collection('users').document(id).setData({
         'name': name,
@@ -25,11 +30,4 @@ class User {
       print(error);
     }
   }
-
-  // Map<String, dynamic> toMap() {
-  //   return {
-  //     'name': name,
-  //     'email': email,
-  //   };
-  // }
 }

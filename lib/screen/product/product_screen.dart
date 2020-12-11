@@ -1,7 +1,11 @@
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:virtual_store_flutter/model/cart_manager.dart';
 import 'package:virtual_store_flutter/model/product.dart';
+import 'package:virtual_store_flutter/model/user_manager.dart';
+import 'package:virtual_store_flutter/screen/cart/cart_screen.dart';
+import 'package:virtual_store_flutter/screen/login/login_screen.dart';
 import 'package:virtual_store_flutter/screen/product/components/size_widget.dart';
 
 class ProductScreen extends StatelessWidget {
@@ -37,7 +41,7 @@ class ProductScreen extends StatelessWidget {
             Padding(
               padding: EdgeInsets.all(16),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   Text(
                     product.name,
@@ -66,16 +70,45 @@ class ProductScreen extends StatelessWidget {
                     padding: EdgeInsets.only(top: 15, bottom: 8),
                     child: Text(
                       'サイズ別',
-                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+                      style:
+                          TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
                     ),
                   ),
-                  Wrap( //囲い
+                  Wrap(
+                    //囲い
                     spacing: 5, //囲い間の幅(横)。
-                    runSpacing: 5,//囲い間の幅(縦)。
+                    runSpacing: 5, //囲い間の幅(縦)。
                     children: product.sizes.map((sizesMap) {
                       return SizeWidget(size: sizesMap);
                     }).toList(),
-                  )
+                  ),
+                  SizedBox(height: 20),
+                  if (product.hasStock) //全てストックがある場合のみ表示。
+                    Consumer2<UserManager, Product>(
+                        builder: (_, userManager, product, __) {
+                      return SizedBox(
+                        height: 44,
+                        child: RaisedButton(
+                          onPressed: product.selectedSize != null
+                              ? () {
+                                  if (userManager.islLogin) {
+                                    //ログインしていたらそのままカートへ
+                                    context.read<CartManager>().addToCart(product);
+                                    Navigator.of(context).pushNamed(CartScreen.id);
+                                  } else {
+                                    //ログインしていなければ
+                                    Navigator.of(context)
+                                        .pushNamed(LoginScreen.id);
+                                  }
+                                }
+                              : null,
+                          color: Theme.of(context).primaryColor,
+                          textColor: Colors.white,
+                          child: Text(
+                              userManager.islLogin ? 'カートへ追加' : 'ログインしてカートへ'),
+                        ),
+                      );
+                    }),
                 ],
               ),
             )

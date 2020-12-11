@@ -26,4 +26,26 @@ class Product extends ChangeNotifier {
     _selectedSize = value;
     notifyListeners();
   }
+
+  int get totalStock { //ストック数。
+    int stock = 0;
+    for (final size in sizes) {
+      stock += size.stock;
+    }
+    return stock;
+  }
+
+  bool get hasStock { //ストックがあるかないか。
+    return totalStock > 0;
+  }
+
+  ItemSize findSize(String name) { //選択したサイズの確認。
+    try {
+      return sizes.firstWhere((s) => s.name == name);
+    } catch (e) {
+      return null;
+    }
+  }
+
+
 }
