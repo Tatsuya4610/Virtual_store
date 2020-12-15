@@ -15,7 +15,7 @@ class User {
   String password;
   String confirmPassword;
 
-  DocumentReference get fireStoreRef => Firestore.instance.document('user/$id'); //user別のドキュメントを取得。
+  DocumentReference get fireStoreRef => Firestore.instance.document('users/$id'); //user別のドキュメントを取得。
 
   CollectionReference get cartReference => fireStoreRef.collection('cart'); // ユーザー別のカート。
 

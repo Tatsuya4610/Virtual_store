@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:virtual_store_flutter/common/custom_drawer/custom_drawer.dart';
 import 'package:virtual_store_flutter/model/product_manager.dart';
+import 'package:virtual_store_flutter/screen/cart/cart_screen.dart';
 import 'package:virtual_store_flutter/screen/products/components/product_list_tile.dart';
 import 'package:virtual_store_flutter/screen/products/components/search_dialog.dart';
 
@@ -93,6 +94,16 @@ class ProductsScreen extends StatelessWidget {
               );
             },
           );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.white,
+        foregroundColor: Theme.of(context).primaryColor,
+        child: Icon(
+          Icons.shopping_cart,
+        ),
+        onPressed: () {
+          Navigator.of(context).pushNamed(CartScreen.id);
         },
       ),
     );
