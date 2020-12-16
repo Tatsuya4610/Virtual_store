@@ -44,4 +44,12 @@ class ProductManager extends ChangeNotifier {
     //   print(doc.data);
     // }
   }
+  
+  Product findProductById(String id) { //渡されたIdがListのIdと同じか照合。
+    try {
+      return _allProducts.firstWhere((pct) => pct.id == id);
+    } catch (e) {
+      return null;
+    }
+  }
 }

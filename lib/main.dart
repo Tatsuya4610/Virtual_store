@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:virtual_store_flutter/model/cart_manager.dart';
-import 'package:virtual_store_flutter/model/cart_product.dart';
+import 'package:virtual_store_flutter/model/home_manager.dart';
 import 'package:virtual_store_flutter/model/page_manager.dart';
 import 'package:virtual_store_flutter/model/product_manager.dart';
 import 'package:virtual_store_flutter/model/user_manager.dart';
@@ -33,11 +33,16 @@ class MyApp extends StatelessWidget {
           create: (_) => ProductManager(),
           lazy: false,
         ),
+        ChangeNotifierProvider(
+          create: (_) => HomeManager(),
+          lazy: false,
+        ),
         ChangeNotifierProxyProvider<UserManager, CartManager>(
           //ログインユーザーの切替りに対応。
           create: (_) => CartManager(),
           lazy: false,
-          update: (_, userManager, cartManager) => cartManager..updateUser(userManager),
+          update: (_, userManager, cartManager) =>
+              cartManager..updateUser(userManager),
         ),
       ],
       child: MaterialApp(
