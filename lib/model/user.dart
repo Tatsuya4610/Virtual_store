@@ -14,6 +14,7 @@ class User {
   String email;
   String password;
   String confirmPassword;
+  bool admin = false;
 
   DocumentReference get fireStoreRef => Firestore.instance.document('users/$id'); //user別のドキュメントを取得。
 

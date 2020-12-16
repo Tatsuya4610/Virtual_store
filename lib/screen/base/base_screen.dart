@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:virtual_store_flutter/common/custom_drawer/custom_drawer.dart';
 import 'package:virtual_store_flutter/model/page_manager.dart';
+import 'package:virtual_store_flutter/model/user_manager.dart';
+import 'package:virtual_store_flutter/screen/admin_user/admin_user_screen.dart';
 import 'package:virtual_store_flutter/screen/home/home_screen.dart';
 import 'package:virtual_store_flutter/screen/products/products_screen.dart';
 
@@ -10,37 +12,36 @@ class BaseScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Provider.of<PageManager>(context).pageControllers = _pageController;
-    return PageView(
-      controller: _pageController,
-      physics: NeverScrollableScrollPhysics(), //スライドでページ移動不可。
-      children: <Widget>[
-        HomeScreen(),
-        Scaffold(
-          drawer: CustomDrawer(),
-          appBar: AppBar(
-            title: Text('Home'),
+    return Consumer<UserManager>(builder: (_,userManager,__) {
+      return PageView(
+        controller: _pageController,
+        physics: NeverScrollableScrollPhysics(), //スライドでページ移動不可。
+        children: <Widget>[
+          HomeScreen(), //1
+          Scaffold( //2
+            drawer: CustomDrawer(),
+            appBar: AppBar(
+              title: Text('Home'),
+            ),
           ),
-        ),
-        ProductsScreen(),
-        Scaffold(
-          drawer: CustomDrawer(),
-          appBar: AppBar(
-            title: Text('Home1'),
+          ProductsScreen(), //3
+          Scaffold( //4
+            drawer: CustomDrawer(),
+            appBar: AppBar(
+              title: Text('Home1'),
+            ),
           ),
-        ),
-        Scaffold(
-          drawer: CustomDrawer(),
-          appBar: AppBar(
-            title: Text('Home2'),
-          ),
-        ),
-        Scaffold(
-          drawer: CustomDrawer(),
-          appBar: AppBar(
-            title: Text('Home3'),
-          ),
-        ),
-      ],
-    );
+          if (userManager.adminEnabled) ...[ //5,6番目と認識。
+            AdminUserScreen(),
+            Scaffold( //6
+              drawer: CustomDrawer(),
+              appBar: AppBar(
+                title: Text('リクエスト'),
+              ),
+            ),
+          ]
+        ],
+      );
+    });
   }
 }

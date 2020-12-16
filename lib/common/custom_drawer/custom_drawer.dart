@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:virtual_store_flutter/common/custom_drawer/custom_drawer_header.dart';
 import 'package:virtual_store_flutter/common/custom_drawer/drawer_tile.dart';
+import 'package:virtual_store_flutter/model/user_manager.dart';
 
 class CustomDrawer extends StatelessWidget {
   @override
@@ -44,6 +46,19 @@ class CustomDrawer extends StatelessWidget {
                 title: '店舗',
                 page: 3,
               ),
+              Consumer<UserManager>(builder: (_,userManager,__) {
+                if (userManager.adminEnabled) {
+                  return Column(
+                    children: <Widget>[
+                      Divider(),
+                      DrawerTile(iconData: Icons.settings, title: 'ユーザー', page: 4),
+                      DrawerTile(iconData: Icons.settings, title: 'リクエスト', page: 5),
+                    ],
+                  );
+                } else {
+                  return Container();
+                }
+              }),
             ],
           ),
         ],

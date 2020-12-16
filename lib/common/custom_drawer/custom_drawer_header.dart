@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:virtual_store_flutter/model/page_manager.dart';
 import 'package:virtual_store_flutter/model/user_manager.dart';
 import 'package:virtual_store_flutter/screen/login/login_screen.dart';
 
@@ -34,6 +35,7 @@ class CustomDrawerHeader extends StatelessWidget {
               GestureDetector(
                 onTap: () {
                   if (userManager.islLogin) {
+                    context.read<PageManager>().setPage(0);
                     userManager.signOut();
                   } else {
                     Navigator.of(context).pushNamed(LoginScreen.id);

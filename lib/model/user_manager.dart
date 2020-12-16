@@ -79,8 +79,15 @@ class UserManager extends ChangeNotifier {
           .document(currentUser.uid)
           .get();//ログイン中のアカウントのデータを取得。
       user = User.formDocument(docUser);//取得したデーターをformDocumentに登録。
+
+      final docAdmin = await Firestore.instance.collection('admin').document(user.id).get();
+      if (docAdmin.exists) { //ログインしたuserがAdmin(管理者)として登録されていたら。
+        user.admin = true;
+      }
       notifyListeners();
     }
   }
+
+  bool get adminEnabled => user != null && user.admin; //管理者が有効かどうか。
 
 }
