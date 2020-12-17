@@ -8,6 +8,7 @@ import 'package:virtual_store_flutter/screen/home/home_screen.dart';
 import 'package:virtual_store_flutter/screen/products/products_screen.dart';
 
 class BaseScreen extends StatelessWidget {
+  static const id = 'BaseScreen';
   final PageController _pageController = PageController();
   @override
   Widget build(BuildContext context) {
@@ -18,17 +19,17 @@ class BaseScreen extends StatelessWidget {
         physics: NeverScrollableScrollPhysics(), //スライドでページ移動不可。
         children: <Widget>[
           HomeScreen(), //1
-          Scaffold( //2
+          ProductsScreen(), //2
+          Scaffold( //3
             drawer: CustomDrawer(),
             appBar: AppBar(
-              title: Text('Home'),
+              title: Text('リクエスト'),
             ),
           ),
-          ProductsScreen(), //3
-          Scaffold( //4
+          Scaffold( //3
             drawer: CustomDrawer(),
             appBar: AppBar(
-              title: Text('Home1'),
+              title: Text('店舗'),
             ),
           ),
           if (userManager.adminEnabled) ...[ //5,6番目と認識。

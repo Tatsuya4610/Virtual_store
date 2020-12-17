@@ -3,6 +3,7 @@ import 'package:virtual_store_flutter/helper/valid.dart';
 import 'package:virtual_store_flutter/model/user.dart';
 import 'package:provider/provider.dart';
 import 'package:virtual_store_flutter/model/user_manager.dart';
+import 'package:virtual_store_flutter/screen/base/base_screen.dart';
 
 class SignUPScreen extends StatelessWidget {
   static const id = 'SignUPScreen';
@@ -130,7 +131,7 @@ class SignUPScreen extends StatelessWidget {
                                 );
                               },
                               onSuccess: () {
-                                Navigator.of(context).pop();
+                                Navigator.of(context).pushNamed(BaseScreen.id);
                               },
                             );
                       }

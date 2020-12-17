@@ -5,6 +5,7 @@ import 'package:virtual_store_flutter/model/cart_manager.dart';
 import 'package:virtual_store_flutter/model/product.dart';
 import 'package:virtual_store_flutter/model/user_manager.dart';
 import 'package:virtual_store_flutter/screen/cart/cart_screen.dart';
+import 'package:virtual_store_flutter/screen/edit_product/edit_product_screen.dart';
 import 'package:virtual_store_flutter/screen/login/login_screen.dart';
 import 'package:virtual_store_flutter/screen/product/components/size_widget.dart';
 
@@ -19,6 +20,18 @@ class ProductScreen extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Text(product.name),
+          centerTitle: true,
+          actions: <Widget>[
+            Consumer<UserManager>(builder: (_,userManager,__) {
+              if (userManager.adminEnabled) {
+                return IconButton(icon: Icon(Icons.edit), onPressed: (){
+                  Navigator.of(context).pushNamed(EditProductScreen.id, arguments: product);
+                });
+              } else {
+                return Container();
+              }
+            })
+          ],
         ),
         backgroundColor: Colors.white,
         body: ListView(

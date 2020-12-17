@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:alphabet_list_scroll_view/alphabet_list_scroll_view.dart';
 import 'package:provider/provider.dart';
+import 'package:virtual_store_flutter/common/custom_drawer/custom_drawer.dart';
 import 'package:virtual_store_flutter/model/admin_user_manager.dart';
 
 class AdminUserScreen extends StatelessWidget {
@@ -11,9 +12,10 @@ class AdminUserScreen extends StatelessWidget {
           title: Text('ユーザー'),
           centerTitle: true,
         ),
+        drawer: CustomDrawer(),
         body: Consumer<AdminUserManager>(
           builder: (_, adminUserManager, __) {
-            return AlphabetListScrollView(
+            return AlphabetListScrollView( //Dartパッケージ。
               itemBuilder: (_, index) {
                 return ListTile(
                   title: Text(

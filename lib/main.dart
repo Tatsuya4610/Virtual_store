@@ -8,6 +8,7 @@ import 'package:virtual_store_flutter/model/user_manager.dart';
 import 'package:virtual_store_flutter/screen/base/base_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:virtual_store_flutter/screen/cart/cart_screen.dart';
+import 'package:virtual_store_flutter/screen/edit_product/edit_product_screen.dart';
 import 'package:virtual_store_flutter/screen/login/login_screen.dart';
 import 'package:virtual_store_flutter/screen/product/product_screen.dart';
 import 'package:virtual_store_flutter/screen/signup/signup_screen.dart';
@@ -68,6 +69,8 @@ class MyApp extends StatelessWidget {
           LoginScreen.id: (context) => LoginScreen(),
           ProductScreen.id: (context) => ProductScreen(),
           CartScreen.id: (context) => CartScreen(),
+          BaseScreen.id : (context) => BaseScreen(),
+          EditProductScreen.id : (context) => EditProductScreen(),
         },
       ),
     );
