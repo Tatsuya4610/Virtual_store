@@ -11,7 +11,7 @@ class ProductListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).pushNamed(ProductScreen.id,arguments: product);
+        Navigator.of(context).pushNamed(ProductScreen.id, arguments: product);
       },
       child: Card(
         shape: RoundedRectangleBorder(
@@ -36,20 +36,27 @@ class ProductListTile extends StatelessWidget {
                   children: <Widget>[
                     Text(
                       product.name,
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 5),
-                      child: Text(
-                        '〜から',
-                        style: TextStyle(color: Colors.grey[500], fontSize: 12),
+                    if (product.hasStock) //ストックがあるなら、ストック内の最低価格を表示。
+                      Text(
+                        '${product.basePrice}円〜',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w800,
+                          color: Theme.of(context).primaryColor,
+                        ),
                       ),
-                    ),
-                    Text('1000円',style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w800,
-                      color: Theme.of(context).primaryColor,
-                    ),),
+                    if (!product.hasStock) //ストックなし
+                      Text(
+                        '売り切れ',
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                   ],
                 ),
               ),

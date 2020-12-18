@@ -18,7 +18,6 @@ class Product extends ChangeNotifier {
   String description;
   List<String> images;
   List<ItemSize> sizes;
-
   ItemSize _selectedSize;
   ItemSize get selectedSize => _selectedSize;
 
@@ -26,6 +25,18 @@ class Product extends ChangeNotifier {
     _selectedSize = value;
     notifyListeners();
   }
+
+   num get basePrice { //価格。
+    num lowest = double.infinity; //在庫がある中の最低価格。
+    for (final size in sizes){
+      if (size.price < lowest && size.hasStock) {
+        lowest = size.price;
+      }
+    }
+    return lowest;
+  }
+
+
 
   int get totalStock { //ストック数。
     int stock = 0;

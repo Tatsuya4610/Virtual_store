@@ -22,11 +22,14 @@ class ProductScreen extends StatelessWidget {
           title: Text(product.name),
           centerTitle: true,
           actions: <Widget>[
-            Consumer<UserManager>(builder: (_,userManager,__) {
+            Consumer<UserManager>(builder: (_, userManager, __) {
               if (userManager.adminEnabled) {
-                return IconButton(icon: Icon(Icons.edit), onPressed: (){
-                  Navigator.of(context).pushNamed(EditProductScreen.id, arguments: product);
-                });
+                return IconButton(
+                    icon: Icon(Icons.edit),
+                    onPressed: () {
+                      Navigator.of(context)
+                          .pushNamed(EditProductScreen.id, arguments: product);
+                    });
               } else {
                 return Container();
               }
@@ -60,14 +63,23 @@ class ProductScreen extends StatelessWidget {
                     product.name,
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
                   ),
-                  Text(
-                    '¥1000円',
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).primaryColor,
+                  if (product.hasStock) //ストックあるなら、ストック内の最低価格を表示。
+                    Text(
+                      '${product.basePrice}円',
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).primaryColor,
+                      ),
                     ),
-                  ),
+                  if (!product.hasStock) //ストックなし。
+                    Text(
+                      '売り切れ',
+                      style: TextStyle(
+                          color: Colors.red,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 22),
+                    ),
                   Padding(
                     padding: EdgeInsets.only(top: 16, bottom: 8),
                     child: Text(
@@ -106,8 +118,11 @@ class ProductScreen extends StatelessWidget {
                               ? () {
                                   if (userManager.islLogin) {
                                     //ログインしていたらそのままカートへ
-                                    context.read<CartManager>().addToCart(product);
-                                    Navigator.of(context).pushNamed(CartScreen.id);
+                                    context
+                                        .read<CartManager>()
+                                        .addToCart(product);
+                                    Navigator.of(context)
+                                        .pushNamed(CartScreen.id);
                                   } else {
                                     //ログインしていなければ
                                     Navigator.of(context)

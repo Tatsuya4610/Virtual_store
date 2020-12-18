@@ -10,7 +10,7 @@ class CartManager extends ChangeNotifier {
 
   User user;
 
-  int productsPrice = 0;
+  num productsPrice = 0;
 
   void updateUser(UserManager userManager) {
     user = userManager.user; //ログイン中のユーザーを記録。ユーザーが変更するたびに受け取る。

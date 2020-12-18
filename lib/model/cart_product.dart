@@ -39,7 +39,7 @@ class CartProduct with ChangeNotifier {
     return product.findSize(size);
   }
 
-  int get unitPrice {
+  num get unitPrice {
     //選択されたサイズ別の金額。
     if (product == null) {
       return 0;
@@ -49,7 +49,7 @@ class CartProduct with ChangeNotifier {
     }
   }
 
-  int get totalPrice => unitPrice * quantity;
+  num get totalPrice => unitPrice * quantity;
 
   Map<String, dynamic> toCartItemMap() {
     //firebaseにカート内容を登録する際のマップ。
