@@ -11,8 +11,8 @@ class ImagesFrom extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FormField<List<dynamic>>(
-      initialValue:
-          List.from(product.images), //編集前の最初のimageを取得。dynamicのリストの際はList.from
+      initialValue: List.from(product.images), //編集前の最初のimageを取得。 //クローン
+      //元のproduct.imageを変更するため、List.fromで囲む必要あり。
       validator: (image) {
         //画像があるかどうか(全て削除して画像がない場合)。EditProductScreenのFromKeyで確認。
         //state.hasError、エラーテキスト。
@@ -22,6 +22,7 @@ class ImagesFrom extends StatelessWidget {
           return null;
         }
       },
+      onSaved: (images) => product.newImage = images, //ここでのimageはdynamicの為、product.image(String)は不可
       builder: (state) {
         void onImageSelected(File file) {
           //写真かフォトギャラリーから受け取った画像fileをstateに追加。

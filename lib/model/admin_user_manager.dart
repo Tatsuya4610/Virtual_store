@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
 import 'package:virtual_store_flutter/model/user.dart';
 import 'package:virtual_store_flutter/model/user_manager.dart';
+// import 'package:faker/faker.dart';
 
 class AdminUserManager extends ChangeNotifier {
   List<User> users = [];

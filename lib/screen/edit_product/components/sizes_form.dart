@@ -12,8 +12,17 @@ class SizesForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return FormField<List<ItemSize>>(
       //product.sizesはItemSize。
-      initialValue: List.from(product.sizes),
-      //元のproduct.sizesだけではなくAddするのもあるため、List。fromで囲む。
+      initialValue: product.sizes,
+      //元のproduct.sizesを変更するため、List.fromで囲む必要あり。
+      // 今回はProduct.clone()で新しいリストを渡している為不要。List.fromをこちらでも付けると、
+      //数値の変更は問題ないが、削除と移動が反映されない。
+      validator: (size) {
+        if (size.isEmpty) {
+          return 'サイズ別詳細を入力してください';
+        } else {
+          return null;
+        }
+      },
       builder: (state) {
         return Column(
           children: <Widget>[
@@ -36,19 +45,50 @@ class SizesForm extends StatelessWidget {
               ],
             ),
             Column(
-              children: state.value.map( //FormFieldここから
+              children: state.value.map(
+                //FormFieldここから
                 (size) {
                   return EditItemSize(
+                    key: ObjectKey(size), //keyをリンクさせる。
                     size: size,
                     onRemove: () {
                       state.value.remove(size);
                       //各々、mapで渡されたsizeを消去。size引数があるのでFunctionではなくVoidCallback。
-                      state.didChange(state.value);//value変化するので。
+                      state.didChange(state.value); //value変化するので。
                     },
+                    onMoveUP: (size != state.value.first)//一番上のリストの場合は上ボタン不可。
+                        ? () {
+                            final index =
+                                state.value.indexOf(size); //挿入されている順番号。
+                            state.value.remove(size); //削除。
+                            state.value
+                                .insert(index - 1, size); //削除したところ(順番号)に挿入。
+                            state.didChange(state.value);
+                          }
+                        : null,
+                    onMoveDown: (size != state.value.last) //一番下のリストなら下ボタン不可。
+                        ? () {
+                            final index = state.value.indexOf(size);
+                            state.value.remove(size);
+                            state.value.insert(index + 1, size);
+                            state.didChange(state.value);
+                          }
+                        : null,
                   );
                 },
               ).toList(),
             ),
+            if (state.hasError)
+              Container(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  state.errorText,
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontSize: 12,
+                  ),
+                ),
+              )
           ],
         );
       },

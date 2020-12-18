@@ -1,6 +1,6 @@
 class ItemSize {
 
-  ItemSize();
+  ItemSize({this.name,this.price,this.stock});
 
   ItemSize.formMap(Map<String, dynamic> map) {
     name = map['name'] as String;
@@ -13,6 +13,22 @@ class ItemSize {
   int stock;
 
   bool get hasStock => stock > 0; //ストックがあるかどうか。
+
+  ItemSize clone() { //クローン
+    return ItemSize(
+      name: name,
+      price: price,
+      stock: stock,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'name' : name,
+      'price' : price,
+      'stock' : stock,
+    };
+  }
 
   // @override
   // String toString() {

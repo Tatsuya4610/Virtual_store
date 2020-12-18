@@ -8,17 +8,18 @@ class EditProductScreen extends StatelessWidget {
 
   final GlobalKey<FormState> fromKey = GlobalKey<FormState>();
 
+
   @override
   Widget build(BuildContext context) {
-    final product = ModalRoute.of(context).settings.arguments as Product;
+    final product = ModalRoute.of(context).settings.arguments as Product; //渡しているのはProduct.clone()。
     return Scaffold(
       appBar: AppBar(
-        title: Text('商品編集画面'),
+        title: (product.name != null) ? Text('商品編集画面') : Text('新規作成画面'),
         centerTitle: true,
       ),
       backgroundColor: Colors.white,
       body: Form(
-        key: fromKey,
+        key: fromKey, //Fromで囲っている部分全て有効。
         child: ListView(
           children: <Widget>[
             ImagesFrom(product),
@@ -29,6 +30,7 @@ class EditProductScreen extends StatelessWidget {
                 children: <Widget>[
                   TextFormField(
                     initialValue: product.name,
+                    keyboardType: TextInputType.name,
                     decoration: InputDecoration(
                       hintText: '題名',
                     ),
@@ -43,6 +45,7 @@ class EditProductScreen extends StatelessWidget {
                         return null;
                       }
                     },
+                    onSaved: (name) => product.name = name, //＊保存
                   ),
                   if (product.hasStock) Text(
                     '${product.basePrice}円',
@@ -72,10 +75,11 @@ class EditProductScreen extends StatelessWidget {
                   ),
                   TextFormField(
                     initialValue: product.description,
+                    keyboardType: TextInputType.name,
                     style: TextStyle(fontSize: 16),
                     decoration: InputDecoration(
                         hintText: '商品説明文', ),
-                    maxLines: null, //キーボード改行ボタン。
+                    // maxLines: null, //キーボード改行ボタン。
                     validator: (desc) {
                       if (desc.isEmpty) {
                         return '入力してください';
@@ -83,18 +87,28 @@ class EditProductScreen extends StatelessWidget {
                         return null;
                       }
                     },
+                    onSaved: (desc) => product.description = desc,
                   ),
                   SizesForm(product),
                 ],
               ),
             ),
-            RaisedButton(
-              onPressed: () {
-                if (fromKey.currentState.validate()) {
-                  //validator条件一致か確認。
-                } else {}
-              },
-              child: Text('保存する'),
+            SizedBox(height: 10,),
+            SizedBox(
+              height: 50,
+              child: RaisedButton(
+                color: Theme.of(context).primaryColor,
+                disabledColor: Theme.of(context).primaryColor.withAlpha(100), //null時
+                textColor: Colors.white,
+                onPressed: () {
+                  if (fromKey.currentState.validate()) {
+                    //validator条件一致か確認。
+                    fromKey.currentState.save(); //＊保存。
+                    product.save();//firebaseに保存。
+                  }
+                },
+                child: Text('保存する',style: TextStyle(fontSize: 18,fontWeight: FontWeight.w700,),),
+              ),
             ),
           ],
         ),
