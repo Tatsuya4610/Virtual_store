@@ -52,4 +52,13 @@ class ProductManager extends ChangeNotifier {
       return null;
     }
   }
+
+  void update(Product cloneProduct) { //更新
+    _allProducts.removeWhere((pdc) => pdc.id == cloneProduct.id);
+    //修正され渡されたcloneProductは_allProducts本体を修正していない為、
+    //修正したproductを削除し、新しく追加する。
+    _allProducts.add(cloneProduct);
+    notifyListeners();
+  }
+
 }

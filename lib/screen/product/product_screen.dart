@@ -12,7 +12,6 @@ import 'package:virtual_store_flutter/screen/product/components/size_widget.dart
 class ProductScreen extends StatelessWidget {
   static const id = 'ProductScreen';
 
-
   @override
   Widget build(BuildContext context) {
     final product = ModalRoute.of(context).settings.arguments as Product;
@@ -29,8 +28,10 @@ class ProductScreen extends StatelessWidget {
                   return IconButton(
                     icon: Icon(Icons.edit),
                     onPressed: () {
-                      Navigator.of(context)
-                          .pushNamed(EditProductScreen.id, arguments: product.clone());
+                      Navigator.of(context).pushNamed(
+                        EditProductScreen.id,
+                        arguments: product.clone(),
+                      );
                     },
                   );
                 } else {

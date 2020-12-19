@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:virtual_store_flutter/common/custom_drawer/custom_drawer.dart';
 import 'package:virtual_store_flutter/model/home_manager.dart';
+import 'package:virtual_store_flutter/model/user_manager.dart';
 import 'package:virtual_store_flutter/screen/cart/cart_screen.dart';
 import 'package:virtual_store_flutter/screen/home/components/section_list.dart';
 import 'package:virtual_store_flutter/screen/home/components/section_promotion.dart';
@@ -38,11 +39,41 @@ class HomeScreen extends StatelessWidget {
                 ),
                 actions: <Widget>[
                   IconButton(
-                      icon: Icon(Icons.shopping_cart),
-                      color: Colors.white,
-                      onPressed: () {
-                        Navigator.of(context).pushNamed(CartScreen.id);
-                      })
+                    icon: Icon(Icons.shopping_cart),
+                    color: Colors.white,
+                    onPressed: () {
+                      Navigator.of(context).pushNamed(CartScreen.id);
+                    },
+                  ),
+                  Consumer2<UserManager, HomeManager>(
+                      builder: (_, userManager, homeManager, __) {
+                    if (userManager.adminEnabled) {
+                      //管理者かどうか。
+                      if (homeManager.editing) {
+                        //管理者で編集モードかどうか。
+                        return PopupMenuButton(onSelected: (e) {
+                          if (e == '保存する') {
+                            homeManager.saveEditing();
+                          } else {
+                            homeManager.discardEditing();
+                          }
+                        }, itemBuilder: (_) {
+                          return ['保存する', '削除する'].map((e) {
+                            return PopupMenuItem(value: e, child: Text(e));
+                          }).toList();
+                        });
+                      } else {
+                        //編集モードで無ければ。
+                        return IconButton(
+                          icon: Icon(Icons.edit),
+                          onPressed: homeManager.enterEditing,
+                        );
+                      }
+                    } else {
+                      //管理者で無ければ非表示。
+                      return Container();
+                    }
+                  })
                 ],
               ),
               Consumer<HomeManager>(builder: (_, homeManager, __) {
