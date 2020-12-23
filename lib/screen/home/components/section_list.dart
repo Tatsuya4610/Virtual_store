@@ -3,6 +3,7 @@ import 'package:virtual_store_flutter/model/section.dart';
 import 'package:virtual_store_flutter/screen/home/components/item_tile.dart';
 import 'package:virtual_store_flutter/screen/home/components/section_header.dart';
 
+
 class SectionList extends StatelessWidget {
   final Section section;
   SectionList(this.section);

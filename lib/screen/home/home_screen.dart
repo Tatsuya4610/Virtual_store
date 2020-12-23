@@ -4,6 +4,7 @@ import 'package:virtual_store_flutter/common/custom_drawer/custom_drawer.dart';
 import 'package:virtual_store_flutter/model/home_manager.dart';
 import 'package:virtual_store_flutter/model/user_manager.dart';
 import 'package:virtual_store_flutter/screen/cart/cart_screen.dart';
+import 'package:virtual_store_flutter/screen/home/components/add_section_widget.dart';
 import 'package:virtual_store_flutter/screen/home/components/section_list.dart';
 import 'package:virtual_store_flutter/screen/home/components/section_promotion.dart';
 
@@ -89,6 +90,10 @@ class HomeScreen extends StatelessWidget {
                       return Container();
                   }
                 }).toList();
+
+                if (homeManager.editing) //childrenのWidgetを追加。
+                  children.add(AddSectionWidget(homeManager));
+
                 return SliverList(
                   //各々のWidgetsごとにスクロール。
                   delegate: SliverChildListDelegate(children),

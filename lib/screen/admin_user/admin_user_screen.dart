@@ -9,27 +9,49 @@ class AdminUserScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('ユーザー'),
+          title: Consumer<AdminUserManager>(builder: (_,adminUserManager,__) {
+            return Text('ユーザー (${adminUserManager.users.length.toString()}人)');
+          },),
           centerTitle: true,
         ),
         drawer: CustomDrawer(),
         body: Consumer<AdminUserManager>(
           builder: (_, adminUserManager, __) {
-            return AlphabetListScrollView( //Dartパッケージ。
+            return AlphabetListScrollView(
+              //Dartパッケージ。
               itemBuilder: (_, index) {
-                return ListTile(
-                  title: Text(
-                    adminUserManager.users[index].name,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                    ),
-                  ),
-                  subtitle: Text(
-                    adminUserManager.users[index].email,
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
+                return Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  child: Column(
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          Column(
+                            children: [
+                              Text(
+                                adminUserManager.users[index].name,
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 10),
+                              ),
+                              Text(
+                                adminUserManager.users[index].subname,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    fontSize: 20),
+                              ),
+                            ],
+                          ),
+                          Container(
+                            padding: EdgeInsets.only(top: 15,left: 30),
+                            child: Text(
+                              adminUserManager.users[index].email,
+                              style: TextStyle(color: Colors.white, fontSize: 18),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 );
               },

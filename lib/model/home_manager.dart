@@ -7,7 +7,8 @@ class HomeManager extends ChangeNotifier {
     _loadSections();
   }
 
-  List<Section> sections = [];
+  List<Section> _sections = [];
+  List<Section> _editingSections = [];
 
   bool editing = false;
 
@@ -17,10 +18,10 @@ class HomeManager extends ChangeNotifier {
     firestore.collection('home').snapshots().listen(
       (snapshot) {
         //getDocumentではsnapshotはfirebase上で更新があれば通知。
-        sections.clear(); //更新時に一度クリアのち取得。
+        _sections.clear(); //更新時に一度クリアのち取得。
         for (DocumentSnapshot document in snapshot.documents) {
           //ホームに入ったドキュメントを全て取得。
-          sections.add(Section.formDocument(
+          _sections.add(Section.formDocument(
               document)); //documentをformDocumentに渡し、firebaseからデーター抽出。リストへ
         }
         notifyListeners();
@@ -29,8 +30,28 @@ class HomeManager extends ChangeNotifier {
     );
   }
 
+  void removeSection(Section section) {
+    _editingSections.remove(section);
+    notifyListeners();
+  }
+
+  void addSection(Section section) {
+    _editingSections.add(section);
+    notifyListeners();
+  }
+
+  List<Section> get sections {
+    if (editing) { //編集モード中の場合。
+      return _editingSections;
+    } else {
+      return _sections;
+    }
+  }
+
   void enterEditing() { //編集モード
     editing = true;
+    //_editingSections = _sectionsは意味なし。
+    _editingSections = _sections.map((s) => s.clone()).toList();
     notifyListeners();
   }
 

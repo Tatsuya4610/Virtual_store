@@ -7,6 +7,7 @@ class User {
     id = document.documentID;
     name = document.data['name'];
     email = document.data['email'];
+    subname = document.data['subname'];
   }
 
   String id;
@@ -14,6 +15,7 @@ class User {
   String email;
   String password;
   String confirmPassword;
+  String subname;
   bool admin = false;
 
   DocumentReference get fireStoreRef => Firestore.instance.document('users/$id'); //user別のドキュメントを取得。
