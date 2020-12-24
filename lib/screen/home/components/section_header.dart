@@ -5,39 +5,47 @@ import 'package:virtual_store_flutter/model/section.dart';
 import 'package:provider/provider.dart';
 
 class SectionHeader extends StatelessWidget {
-  final Section section;
-  SectionHeader(this.section);
-
   @override
   Widget build(BuildContext context) {
     final homeManager = context.watch<HomeManager>();
+    final section = context.watch<Section>();
 
     if (homeManager.editing) {
-      return Row(
+      return Column(
         children: <Widget>[
-          Expanded(
-            child: TextFormField(
-              initialValue: section.name,
-              decoration: InputDecoration(
-                hintText: '題名',
-                isDense: true,
-                border: InputBorder.none,
+          Row(
+            children: <Widget>[
+              Expanded(
+                child: TextFormField(
+                  initialValue: section.name,
+                  decoration: InputDecoration(
+                    hintText: '題名',
+                    isDense: true,
+                    border: InputBorder.none,
+                  ),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                  ),
+                  onChanged: (text) => section.name = text, //＊自動的に渡す。
+                ),
               ),
-              style: TextStyle(
+              CustomIconButton(
+                iconData: Icons.remove,
                 color: Colors.white,
-                fontSize: 18,
-                fontWeight: FontWeight.w800,
-              ),
-              onChanged: (text) => section.name,
-            ),
+                onTap: () {
+                  homeManager.removeSection(section);
+                },
+              )
+            ],
           ),
-          CustomIconButton(
-            iconData: Icons.remove,
-            color: Colors.white,
-            onTap: () {
-              homeManager.removeSection(section);
-            },
-          )
+          if (section.error != null)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 4),
+              child: Text(section.error,
+                  style: TextStyle(color: Colors.red,fontWeight: FontWeight.w700)),
+            ), //＊渡されたtextにerror該当する場合は
         ],
       );
     } else {

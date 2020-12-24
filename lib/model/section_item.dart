@@ -7,7 +7,7 @@ class SectionItem {
     product = map['product'] as String;
   }
 
-  String image;
+  dynamic image; //ネットからとフォト分2つのタイプがある為。
   String product;
 
   SectionItem clone() {

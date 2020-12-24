@@ -59,7 +59,7 @@ class HomeScreen extends StatelessWidget {
                             homeManager.discardEditing();
                           }
                         }, itemBuilder: (_) {
-                          return ['保存する', '削除する'].map((e) {
+                          return ['保存する', '編集破棄'].map((e) {
                             return PopupMenuItem(value: e, child: Text(e));
                           }).toList();
                         });

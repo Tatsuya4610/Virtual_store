@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:virtual_store_flutter/model/home_manager.dart';
 import 'package:virtual_store_flutter/model/section.dart';
 

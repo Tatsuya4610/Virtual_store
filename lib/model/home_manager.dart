@@ -55,9 +55,18 @@ class HomeManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  void saveEditing() {
-    editing = false;
-    notifyListeners();
+  void saveEditing() { //保存ボタン時
+    bool valid = true;
+    for (final section in _editingSections) {
+      if (!section.valid()) {//入力されたtextやimageの検証。
+         valid = false; //検証結果、falseで返された場合は。
+      }
+      if (!valid) return;
+
+    }
+
+    // editing = false;
+    // notifyListeners();
   }
 
   void discardEditing() {
