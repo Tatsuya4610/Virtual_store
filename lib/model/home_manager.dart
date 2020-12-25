@@ -11,6 +11,7 @@ class HomeManager extends ChangeNotifier {
   List<Section> _editingSections = [];
 
   bool editing = false;
+  bool loading = false;
 
   final Firestore firestore = Firestore.instance;
 
@@ -55,18 +56,24 @@ class HomeManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  void saveEditing() { //保存ボタン時
+
+  Future<void> saveEditing() async   { //保存ボタン時
     bool valid = true;
     for (final section in _editingSections) {
       if (!section.valid()) {//入力されたtextやimageの検証。
          valid = false; //検証結果、falseで返された場合は。
       }
       if (!valid) return;
+      loading = true;
+      notifyListeners();
 
+      for(final section in _editingSections) {
+        await section.save(); //firebaseに保存。
+      }
     }
-
-    // editing = false;
-    // notifyListeners();
+    loading = false;
+    editing = false;
+    notifyListeners();
   }
 
   void discardEditing() {
