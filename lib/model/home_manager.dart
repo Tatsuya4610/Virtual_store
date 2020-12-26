@@ -15,8 +15,8 @@ class HomeManager extends ChangeNotifier {
 
   final Firestore firestore = Firestore.instance;
 
-  Future<void> _loadSections() async {
-    firestore.collection('home').snapshots().listen(
+  Future<void> _loadSections() async {//posの番号順に取得。
+    firestore.collection('home').orderBy('pos').snapshots().listen(
       (snapshot) {
         //getDocumentではsnapshotはfirebase上で更新があれば通知。
         _sections.clear(); //更新時に一度クリアのち取得。
@@ -67,8 +67,18 @@ class HomeManager extends ChangeNotifier {
       loading = true;
       notifyListeners();
 
-      for(final section in _editingSections) {
-        await section.save(); //firebaseに保存。
+      int pos = 0;
+
+      for(final section in _editingSections) { //posを渡し、順番有りで保存。
+        await section.save(pos); //firebaseに保存。
+        pos++;
+      }
+
+      for(final section in List.from(_sections)) { //セクション全体を削除。
+        if(!_editingSections.any((element) => element.id == section.id)) { //sectionごと削除の場合は既存idなし。
+          //新しく編集されたsectionが既存のsectionだった場合,写真やタイトルのみの編集だとidは残っている。
+          await section.delete();
+        }
       }
     }
     loading = false;

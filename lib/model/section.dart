@@ -58,11 +58,12 @@ class Section extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> save() async {
+  Future<void> save(int pos) async {
     // product.dartのsaveと内容は類似。
     final Map<String, dynamic> data = {
       'name': name,
       'type': type,
+      'pos' : pos,  //pos順序番号登録。
     };
 
     if (id == null) {
@@ -103,10 +104,18 @@ class Section extends ChangeNotifier {
       //削除したImageはupdateImagesに追加されていない為、削除と同様。
       try {
         await firestoreRef.updateData(itemsData);
-      } catch(e) {
-        print('エラー$e');
-      }
+      } catch(e) {}
 
+    }
+  }
+
+  Future<void> delete() async {//section削除。
+    await firestoreRef.delete(); //ドキュメントごと削除。
+    for(final item in items) { //ドキュメントに残っていたstorage保存されている画像を削除。
+      try {
+        final ref = await storage.getReferenceFromUrl(item.image as String);
+        await ref.delete();
+      } catch (e) {}
     }
   }
 

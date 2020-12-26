@@ -48,7 +48,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                   Consumer2<UserManager, HomeManager>(
                       builder: (_, userManager, homeManager, __) {
-                    if (userManager.adminEnabled) {
+                    if (userManager.adminEnabled && !homeManager.loading) { //編集者またはfirebase保存中は非表示。
                       //管理者かどうか。
                       if (homeManager.editing) {
                         //管理者で編集モードかどうか。
@@ -78,7 +78,7 @@ class HomeScreen extends StatelessWidget {
                 ],
               ),
               Consumer<HomeManager>(builder: (_, homeManager, __) {
-                if (homeManager.loading) {
+                if (homeManager.loading) { //firebase保存中のアクション
                   return SliverToBoxAdapter(
                     child: LinearProgressIndicator(
                       valueColor: AlwaysStoppedAnimation(Colors.white),
