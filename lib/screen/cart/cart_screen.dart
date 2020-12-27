@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:virtual_store_flutter/common/price_card.dart';
 import 'package:virtual_store_flutter/model/cart_manager.dart';
+import 'package:virtual_store_flutter/screen/address/address_screen.dart';
 import 'package:virtual_store_flutter/screen/cart/components/cart_tile.dart';
 
 class CartScreen extends StatelessWidget {
@@ -24,7 +25,9 @@ class CartScreen extends StatelessWidget {
               ),
               PriceCard(
                 buttonText: '配達注文画面へ',
-                onPressed: cartManager.isCartValid ? (){} : null,
+                onPressed: cartManager.isCartValid ? (){
+                  Navigator.of(context).pushNamed(AddressScreen.id);
+                } : null,
               ),
             ],
           );

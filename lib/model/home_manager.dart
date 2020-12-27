@@ -74,7 +74,7 @@ class HomeManager extends ChangeNotifier {
         pos++;
       }
 
-      for(final section in List.from(_sections)) { //セクション全体を削除。
+      for(final section in List.from(_sections)) { //セクション全体を削除。_loadSections時、clear後に新しくsectionsを受け取り変化するため。
         if(!_editingSections.any((element) => element.id == section.id)) { //sectionごと削除の場合は既存idなし。
           //新しく編集されたsectionが既存のsectionだった場合,写真やタイトルのみの編集だとidは残っている。
           await section.delete();
