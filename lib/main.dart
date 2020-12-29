@@ -14,6 +14,7 @@ import 'package:virtual_store_flutter/screen/login/login_screen.dart';
 import 'package:virtual_store_flutter/screen/product/product_screen.dart';
 import 'package:virtual_store_flutter/screen/select_product/select_product_screen.dart';
 import 'package:virtual_store_flutter/screen/signup/signup_screen.dart';
+import 'package:virtual_store_flutter/service/postal.dart';
 
 void main() {
   runApp(
@@ -39,6 +40,10 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (_) => HomeManager(),
+          lazy: false,
+        ),
+        ChangeNotifierProvider(
+          create: (_) => Postal(),
           lazy: false,
         ),
         ChangeNotifierProxyProvider<UserManager, CartManager>(
