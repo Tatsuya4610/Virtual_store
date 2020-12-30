@@ -27,6 +27,7 @@ class User {
     try {
       await Firestore.instance.collection('users').document(id).setData({
         'name': name,
+        'subname': subname,
         'email': email,
       });
     } catch (error) {

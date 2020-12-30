@@ -31,6 +31,23 @@ class SignUPScreen extends StatelessWidget {
                 TextFormField(
                   enabled: !loading, //falseの場合入力不可。登録ボタンを押した後　firebase登録確認中は入力不可。
                   decoration: InputDecoration(hintText: '名前'),
+                  onSaved: (name) => _user.subname = name,
+                  validator: (name) {
+                    if (name.isEmpty) {
+                      return '入力してください';
+                    } else if (name.trim().split('　').length <= 1) {
+                      return 'フルネームを入力してください';
+                    } else {
+                      return null;
+                    }
+                  },
+                ),
+                SizedBox(
+                  height: 16,
+                ),
+                TextFormField(
+                  enabled: !loading, //falseの場合入力不可。登録ボタンを押した後　firebase登録確認中は入力不可。
+                  decoration: InputDecoration(hintText: '名前ふりがな'),
                   onSaved: (name) => _user.name = name,
                   validator: (name) {
                     if (name.isEmpty) {

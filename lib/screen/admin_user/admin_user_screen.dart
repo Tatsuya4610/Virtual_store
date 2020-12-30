@@ -15,55 +15,59 @@ class AdminUserScreen extends StatelessWidget {
           centerTitle: true,
         ),
         drawer: CustomDrawer(),
-        body: Consumer<AdminUserManager>(
-          builder: (_, adminUserManager, __) {
-            return AlphabetListScrollView(
-              //Dartパッケージ。
-              itemBuilder: (_, index) {
-                return Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
-                  child: Column(
-                    children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          Column(
-                            children: [
-                              Text(
-                                adminUserManager.users[index].name,
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 10),
-                              ),
-                              Text(
-                                adminUserManager.users[index].subname,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                    fontSize: 20),
-                              ),
-                            ],
-                          ),
-                          Container(
-                            padding: EdgeInsets.only(top: 15,left: 30),
-                            child: Text(
-                              adminUserManager.users[index].email,
-                              style: TextStyle(color: Colors.white, fontSize: 18),
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Consumer<AdminUserManager>(
+            builder: (_, adminUserManager, __) {
+              return AlphabetListScrollView(
+                //Dartパッケージ。
+                itemBuilder: (_, index) {
+                  return Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Column(
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Column(
+                              children: [
+                                Text(
+                                  adminUserManager.users[index].name,
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 10),
+                                ),
+                                Text(
+                                  adminUserManager.users[index].subname,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                      fontSize: 20),
+                                ),
+                              ],
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                );
-              },
-              highlightTextStyle: TextStyle(
-                color: Colors.white,
-                fontSize: 18,
-              ),
-              indexedHeight: (index) => 60, //SizedBox(height)のイメージ。リストの高さ。
-              strList: adminUserManager.names, //名前のリスト。
-              showPreview: true, //右の検索アルファベット使用時に画面に文字表示。
-            );
-          },
-        ));
+                            Container(
+                              padding: EdgeInsets.only(top: 15,left: 30),
+                              child: Text(
+                                adminUserManager.users[index].email,
+                                style: TextStyle(color: Colors.white, fontSize: 18),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                },
+                highlightTextStyle: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                ),
+                indexedHeight: (index) => 70, //SizedBox(height)のイメージ。リストの高さ。
+                strList: adminUserManager.names, //名前のリスト。
+                showPreview: true, //右の検索アルファベット使用時に画面に文字表示。
+              );
+            },
+          ),
+        ),
+    );
   }
 }
