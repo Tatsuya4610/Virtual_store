@@ -1,3 +1,6 @@
+
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:virtual_store_flutter/model/address.dart';
@@ -12,29 +15,39 @@ class Postal extends ChangeNotifier {
   bool _town1SelectValue = false;
   bool get townSelectValue => _townSelectValue;
   bool get town1SelectValue => _town1SelectValue;
+  bool _addressGet = false;
+  bool get addressGet => _addressGet;
+  String _postAddress;
+  String get postsAddress => _postAddress;
+  set postAddress(String value) {
+    _postAddress = value;
+  }
 
-
+  Firestore firestore = Firestore.instance;
 
   Future<void> getAddress(String postalCode) async {
+    _addressGet = false;
     //郵便番号情報取得API元　http://geoapi.heartrails.com/
 
-    final url = 'http://geoapi.heartrails.com/api/json?method=searchByPostal&postal=1130031';
+    final url = 'http://geoapi.heartrails.com/api/json?method=searchByPostal&postal=$postalCode';
 
     final Dio dio = Dio(); //Httpパッケージの上位ver
 
     try {
       Response response = await dio.get(url);
       final data = response.data;
-      print(data);
       final addressData = PostalAddress.fromMap(data); //jsonデーターを渡し、データを個別に抽出。
       address = Address( //Addressにデーターを移行。
         prefecture: addressData.prefecture,
         city: addressData.city,
         town: addressData.town,
         town1: addressData.town1,
+        postal: addressData.postal,
         latitude: double.parse(addressData.latitude),
         longitude: double.parse(addressData.longitude),
       );
+      _addressGet = true;
+      print(address.town);
       notifyListeners();
     }  catch (e) {
       Future.error('無効です');
@@ -51,5 +64,13 @@ class Postal extends ChangeNotifier {
     _townSelectValue = false;
     notifyListeners();
   }
+
+  void postRemove() {
+    address = null;
+    _townSelectValue = false;
+    _town1SelectValue = false;
+    notifyListeners();
+  }
+
 
 }

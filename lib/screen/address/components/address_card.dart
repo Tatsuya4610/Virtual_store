@@ -25,12 +25,13 @@ class AddressCard extends StatelessWidget {
                   textAlign: TextAlign.start,
                   style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
                 ),
-                AddressInputField(),
-                if (address.city != null && !postal.townSelectValue && !postal.town1SelectValue)
+                AddressInputField(address),
+                if (address.postal != null && !postal.townSelectValue && !postal.town1SelectValue)
                   //addressの情報がない場合は非表示。townSelectValue押されたら非表示。
                   AddressSelection(address),
                 if (postal.townSelectValue || postal.town1SelectValue)
-                  StreetAddressInputField(address),
+                  if (address.postal != null)
+                    StreetAddressInputField(address),
               ],
             ),
           );

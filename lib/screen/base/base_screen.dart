@@ -9,7 +9,9 @@ import 'package:virtual_store_flutter/screen/products/products_screen.dart';
 
 class BaseScreen extends StatelessWidget {
   static const id = 'BaseScreen';
+
   final PageController _pageController = PageController();
+
   @override
   Widget build(BuildContext context) {
     Provider.of<PageManager>(context).pageControllers = _pageController;
