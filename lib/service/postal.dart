@@ -22,6 +22,12 @@ class Postal extends ChangeNotifier {
   set postAddress(String value) {
     _postAddress = value;
   }
+  bool _onSave = false;
+  bool get onSaved => _onSave;
+  set onSave(bool value) {
+    _onSave = value;
+    notifyListeners();
+  }
 
   Firestore firestore = Firestore.instance;
 
@@ -47,10 +53,9 @@ class Postal extends ChangeNotifier {
         longitude: double.parse(addressData.longitude),
       );
       _addressGet = true;
-      print(address.town);
       notifyListeners();
     }  catch (e) {
-      Future.error('無効です');
+       throw Future.error('無効です');
     }
   }
 

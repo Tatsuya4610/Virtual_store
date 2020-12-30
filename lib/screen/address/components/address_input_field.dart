@@ -11,6 +11,7 @@ class AddressInputField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scaffold = Scaffold.of(context);
     final postalData = context.watch<Postal>();
     if (address.postal == null)
       return Column(
@@ -40,11 +41,20 @@ class AddressInputField extends StatelessWidget {
             },
           ),
           RaisedButton(
-            onPressed: () {
-              if (Form.of(context).validate()) {
-                //もし入力問題ないなら
-                context.read<Postal>().getAddress(postalData.postsAddress);
-                // controller.clear();
+            onPressed: () async {
+              if (Form.of(context).validate()) { //valid入力全て問題なし。
+                try { //郵便番号情報受け取り失敗または入力ミスを通知。
+                  await context.read<Postal>().getAddress(postalData.postsAddress);
+                } catch (e) {
+                  scaffold.showSnackBar(SnackBar(
+                    content: Text('郵便番号を再入力して下さい'),
+                    duration: Duration(seconds: 5),
+                    action: SnackBarAction(
+                      label: '閉じる',
+                      onPressed: () {},
+                    ),
+                  ));
+                }
               }
             },
             color: Theme.of(context).primaryColor,
@@ -72,6 +82,7 @@ class AddressInputField extends StatelessWidget {
             color: Theme.of(context).primaryColor,
             onTap: () {
               context.read<Postal>().postRemove(); //郵便番号の入力情報を削除。
+              postalData.onSave = false;
             },
           )
         ],
