@@ -9,6 +9,7 @@ import 'package:virtual_store_flutter/screen/home/components/section_list.dart';
 import 'package:virtual_store_flutter/screen/home/components/section_promotion.dart';
 
 class HomeScreen extends StatelessWidget {
+  static const id = 'HomeScreen';
   @override
   Widget build(BuildContext context) {
     return Scaffold(

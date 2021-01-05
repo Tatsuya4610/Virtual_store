@@ -10,7 +10,7 @@ class StreetAddressInputField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final postal = context.watch<Postal>();
-
+    final addressData = context.watch<Address>();
     final city = '${address.prefecture}${address.city}';
     final city1 = '${address.prefecture}${address.city}';
     final town = '${address.town}';
@@ -32,7 +32,7 @@ class StreetAddressInputField extends StatelessWidget {
                 return null;
               }
             },
-            onSaved: (text) => address.ollStreetAddress = text,
+            onSaved: (text) => addressData.ollStreetAddress = text,
           ),
           TextFormField(
             initialValue: (postal.townSelectValue)
@@ -48,7 +48,7 @@ class StreetAddressInputField extends StatelessWidget {
                 return null;
               }
             },
-            onSaved: (text) => address.subStreetAddress = text,
+            onSaved: (text) => addressData.subStreetAddress = text,
           ),
           if (!postal.onSaved)
             RaisedButton(
@@ -71,8 +71,8 @@ class StreetAddressInputField extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Text(postal.address.ollStreetAddress,style: TextStyle(fontSize: 17),),
-          Text(postal.address.subStreetAddress,style: TextStyle(fontSize: 17),),
+          Text(addressData.ollStreetAddress,style: TextStyle(fontSize: 17),),
+          Text(addressData.subStreetAddress,style: TextStyle(fontSize: 17),),
         ],
       );
   }

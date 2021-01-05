@@ -14,7 +14,6 @@ class UserManager extends ChangeNotifier {
   User user;
   bool _loading = false;
   bool get loading => _loading;
-
   bool get islLogin => user != null; //userの情報があるならログイン状態。
 
   Future<void> signIn({User user, Function onFail, Function onSuccess}) async {
@@ -52,7 +51,7 @@ class UserManager extends ChangeNotifier {
       onSuccess();
     } on PlatformException catch (error) {
       onFail(
-        getErrorString(error.code),
+        getErrorString(error.code), //エラー日本語化
       );
     }
     loading = false;

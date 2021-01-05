@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:virtual_store_flutter/model/address.dart';
 import 'package:virtual_store_flutter/model/admin_user_manager.dart';
 import 'package:virtual_store_flutter/model/cart_manager.dart';
 import 'package:virtual_store_flutter/model/home_manager.dart';
@@ -11,6 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:virtual_store_flutter/screen/cart/cart_screen.dart';
 import 'package:virtual_store_flutter/screen/checkout/checkout_screen.dart';
 import 'package:virtual_store_flutter/screen/edit_product/edit_product_screen.dart';
+import 'package:virtual_store_flutter/screen/home/home_screen.dart';
 import 'package:virtual_store_flutter/screen/login/login_screen.dart';
 import 'package:virtual_store_flutter/screen/product/product_screen.dart';
 import 'package:virtual_store_flutter/screen/select_product/select_product_screen.dart';
@@ -47,6 +49,10 @@ class MyApp extends StatelessWidget {
           create: (_) => Postal(),
           lazy: false,
         ),
+        ChangeNotifierProvider(
+          create: (_) => Address(),
+          lazy: false,
+        ),
         ChangeNotifierProxyProvider<UserManager, CartManager>(
           //ログインユーザーの切替りに対応。
           create: (_) => CartManager(),
@@ -73,15 +79,16 @@ class MyApp extends StatelessWidget {
             )),
         home: BaseScreen(),
         routes: {
+          HomeScreen.id: (context) => HomeScreen(),
           SignUPScreen.id: (context) => SignUPScreen(),
           LoginScreen.id: (context) => LoginScreen(),
           ProductScreen.id: (context) => ProductScreen(),
           CartScreen.id: (context) => CartScreen(),
-          BaseScreen.id : (context) => BaseScreen(),
-          EditProductScreen.id : (context) => EditProductScreen(),
-          SelectProductScreen.id : (context) => SelectProductScreen(),
-          AddressScreen.id : (context) => AddressScreen(),
-          CheckoutScreen.id : (context) => CheckoutScreen(),
+          BaseScreen.id: (context) => BaseScreen(),
+          EditProductScreen.id: (context) => EditProductScreen(),
+          SelectProductScreen.id: (context) => SelectProductScreen(),
+          AddressScreen.id: (context) => AddressScreen(),
+          CheckoutScreen.id: (context) => CheckoutScreen(),
         },
       ),
     );

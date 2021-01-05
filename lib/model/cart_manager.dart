@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:virtual_store_flutter/model/address.dart';
 import 'package:virtual_store_flutter/model/cart_product.dart';
 import 'package:virtual_store_flutter/model/product.dart';
 import 'package:virtual_store_flutter/model/user.dart';
@@ -9,6 +10,7 @@ class CartManager extends ChangeNotifier {
   List<CartProduct> items = [];
 
   User user;
+  Address address;
 
   num productsPrice = 0;
 
@@ -105,5 +107,12 @@ class CartManager extends ChangeNotifier {
     return true;
   }
 
-
+  void clear() {
+    //firebase購入後のカート削除。
+    for (final cartProduct in items) {
+      user.cartReference.document(cartProduct.cartId).delete();
+    }
+    items.clear();
+    notifyListeners();
+  }
 }

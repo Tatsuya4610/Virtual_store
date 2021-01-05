@@ -4,7 +4,7 @@ import 'package:virtual_store_flutter/model/item_size.dart';
 import 'package:virtual_store_flutter/model/product.dart';
 
 class CartProduct with ChangeNotifier {
-  CartProduct.formProduct(this.product) {
+  CartProduct.formProduct(this._product) {
     //元々ログインしていた、直接のカート追加分。
     productId = product.id;
     quantity = 1;
@@ -19,8 +19,7 @@ class CartProduct with ChangeNotifier {
     size = cartSnapDoc['size'];
 
     Firestore.instance.document('products/$productId').get().then((doc) {
-      product = Product.fromDocument(doc);
-      notifyListeners(); //firebaseから情報を受け取った際、UIも更新。
+      products = Product.fromDocument(doc);
     }); //商品のドキュメント情報。
   }
 
@@ -29,7 +28,12 @@ class CartProduct with ChangeNotifier {
   int quantity;
   String size;
 
-  Product product;
+  Product _product;
+  Product get product => _product;
+  set products(Product value) { //product、firebase更新。
+    _product = value;
+    notifyListeners(); //UIも更新。
+  }
 
   ItemSize get itemSize {
     //カートに入ったサイズの情報。
@@ -57,6 +61,16 @@ class CartProduct with ChangeNotifier {
       'productDocId': productId,
       'quantity': quantity,
       'size': size,
+    };
+  }
+
+  Map<String, dynamic> toOrderItemMap() {
+    //firebaseにカート内容を登録する際のマップ。
+    return {
+      'productDocId': productId,
+      'quantity': quantity,
+      'size': size,
+      'fixedPrice' : unitPrice,
     };
   }
 
