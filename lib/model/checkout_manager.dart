@@ -65,12 +65,12 @@ class CheckoutManager extends ChangeNotifier {
       for (final cartProduct in _cartManager.items) {
         Product product;
         //個別にカート内のアイテムを照合しないとサイズは違うけど同じ商品だった場合、判別できない。
-        if (productsToUpdate.any((pdc) => pdc.id == cartProduct.productId)) { //カート内のアイテムを商品ごとに照会
-          product = productsToUpdate.firstWhere((pdc) => pdc.id == cartProduct.productId); //同上
+        if (productsToUpdate.any((pdc) => pdc.id == cartProduct.cartProductId)) { //カート内のアイテムを商品ごとに照会
+          product = productsToUpdate.firstWhere((pdc) => pdc.id == cartProduct.cartProductId); //同上
         } else {
           final doc = await tx.get(
             //カート内の各アイテムをfirebaseのproductで受け取り。
-            firestore.document('products/${cartProduct.productId}'),
+            firestore.document('products/${cartProduct.cartProductId}'),
           );
           product = Product.fromDocument(doc); //カート内を1年放置すると1年前の情報になる為、最新のproductを取得。
         }

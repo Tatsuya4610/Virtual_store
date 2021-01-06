@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:virtual_store_flutter/common/price_card.dart';
 import 'package:virtual_store_flutter/model/cart_manager.dart';
 import 'package:virtual_store_flutter/model/checkout_manager.dart';
+import 'package:virtual_store_flutter/model/page_manager.dart';
 import 'package:virtual_store_flutter/screen/cart/cart_screen.dart';
 
 class CheckoutScreen extends StatelessWidget {

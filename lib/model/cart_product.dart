@@ -4,9 +4,11 @@ import 'package:virtual_store_flutter/model/item_size.dart';
 import 'package:virtual_store_flutter/model/product.dart';
 
 class CartProduct with ChangeNotifier {
+  final Firestore firestore = Firestore.instance;
+
   CartProduct.formProduct(this._product) {
     //元々ログインしていた、直接のカート追加分。
-    productId = product.id;
+    cartProductId = product.id;
     quantity = 1;
     size = product.selectedSize.name;
   }
@@ -14,19 +16,32 @@ class CartProduct with ChangeNotifier {
   CartProduct.formDocument(DocumentSnapshot cartSnapDoc) {
     //firebaseから受け取ったユーザー別のカートドキュメントをProductへ変換。//別のログインユーザー分
     cartId = cartSnapDoc.documentID;
-    productId = cartSnapDoc['productDocId']; //商品のドキュメントID。
+    cartProductId = cartSnapDoc['productDocId']; //商品のドキュメントID。
     quantity = cartSnapDoc['quantity'];
     size = cartSnapDoc['size'];
 
-    Firestore.instance.document('products/$productId').get().then((doc) {
+    Firestore.instance.document('products/$cartProductId').get().then((doc) {
       products = Product.fromDocument(doc);
     }); //商品のドキュメント情報。
   }
 
+  CartProduct.fromMap(Map<String,dynamic> map) {
+    orderProductId = map['productDocId'] as String;
+    quantity = map['quantity'] as int;
+    size = map['size'] as String;
+    productPrice = map['productPrice'] as num;
+    firestore.document('products/$orderProductId').get().then((doc) {
+      //注文履歴呼び出し時にそのカートのproduct情報を受け取っておく。
+      _product = Product.fromDocument(doc);
+    });
+  }
+
   String cartId;
-  String productId;
+  String cartProductId; //cartとorderのProductId共有不可。
+  String orderProductId;
   int quantity;
   String size;
+  num productPrice;
 
   Product _product;
   Product get product => _product;
@@ -53,12 +68,13 @@ class CartProduct with ChangeNotifier {
     }
   }
 
+
   num get totalPrice => unitPrice * quantity;
 
   Map<String, dynamic> toCartItemMap() {
     //firebaseにカート内容を登録する際のマップ。
     return {
-      'productDocId': productId,
+      'productDocId': cartProductId,
       'quantity': quantity,
       'size': size,
     };
@@ -67,15 +83,15 @@ class CartProduct with ChangeNotifier {
   Map<String, dynamic> toOrderItemMap() {
     //firebaseにカート内容を登録する際のマップ。
     return {
-      'productDocId': productId,
+      'productDocId': cartProductId,
       'quantity': quantity,
       'size': size,
-      'fixedPrice' : unitPrice,
+      'productPrice' : unitPrice,
     };
   }
 
   bool stackable(Product product) {
-    return product.id == productId &&
+    return product.id == cartProductId &&
         product.selectedSize.name == size; //商品IDとサイズが同じか確認。
   }
 

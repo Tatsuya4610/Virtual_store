@@ -3,6 +3,7 @@ import 'package:virtual_store_flutter/model/address.dart';
 import 'package:virtual_store_flutter/model/admin_user_manager.dart';
 import 'package:virtual_store_flutter/model/cart_manager.dart';
 import 'package:virtual_store_flutter/model/home_manager.dart';
+import 'package:virtual_store_flutter/model/orders_manager.dart';
 import 'package:virtual_store_flutter/model/page_manager.dart';
 import 'package:virtual_store_flutter/model/product_manager.dart';
 import 'package:virtual_store_flutter/model/user_manager.dart';
@@ -59,6 +60,12 @@ class MyApp extends StatelessWidget {
           lazy: false,
           update: (_, userManager, cartManager) =>
               cartManager..updateUser(userManager),
+        ),
+        ChangeNotifierProxyProvider<UserManager, OrdersManager>(
+          create: (_) => OrdersManager(),
+          lazy: false,
+          update: (_, userManager, ordersManager) =>
+              ordersManager..updateUser(userManager.user),
         ),
         ChangeNotifierProxyProvider<UserManager, AdminUserManager>(
           create: (_) => AdminUserManager(),
