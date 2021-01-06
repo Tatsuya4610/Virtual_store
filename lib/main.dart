@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:virtual_store_flutter/model/address.dart';
+import 'package:virtual_store_flutter/model/admin_orders_manager.dart';
 import 'package:virtual_store_flutter/model/admin_user_manager.dart';
 import 'package:virtual_store_flutter/model/cart_manager.dart';
 import 'package:virtual_store_flutter/model/home_manager.dart';
@@ -12,6 +13,7 @@ import 'package:virtual_store_flutter/screen/base/base_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:virtual_store_flutter/screen/cart/cart_screen.dart';
 import 'package:virtual_store_flutter/screen/checkout/checkout_screen.dart';
+import 'package:virtual_store_flutter/screen/confirmation/confirmation_screen.dart';
 import 'package:virtual_store_flutter/screen/edit_product/edit_product_screen.dart';
 import 'package:virtual_store_flutter/screen/home/home_screen.dart';
 import 'package:virtual_store_flutter/screen/login/login_screen.dart';
@@ -73,6 +75,12 @@ class MyApp extends StatelessWidget {
           update: (_, userManager, adminUserManager) =>
               adminUserManager..updateUser(userManager),
         ),
+        ChangeNotifierProxyProvider<UserManager, AdminOrderManager>(
+          create: (_) => AdminOrderManager(),
+          lazy: false,
+          update: (_, userManager, adminOrderManager) =>
+          adminOrderManager..updateAdmin(userManager.adminEnabled),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -96,6 +104,7 @@ class MyApp extends StatelessWidget {
           SelectProductScreen.id: (context) => SelectProductScreen(),
           AddressScreen.id: (context) => AddressScreen(),
           CheckoutScreen.id: (context) => CheckoutScreen(),
+          ConfirmationScreen.id: (context) => ConfirmationScreen(),
         },
       ),
     );

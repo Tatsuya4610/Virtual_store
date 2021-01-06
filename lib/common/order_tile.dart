@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:virtual_store_flutter/model/order.dart';
-import 'package:virtual_store_flutter/screen/orders/components/order_product_tile.dart';
+import 'package:virtual_store_flutter/common/order_product_tile.dart';
 
 class OrderTile extends StatelessWidget {
   OrderTile(this.orders);

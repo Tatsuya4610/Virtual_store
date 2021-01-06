@@ -35,7 +35,7 @@ class CheckoutManager extends ChangeNotifier {
     order.orderId = orderId.toString();
     await order.save(); //firebase保存
     _cartManager.clear();
-    onSuccess(); //成功した際に呼び出し。
+    onSuccess(order); //成功した際に呼び出し。
     loading = false;
   }
 
