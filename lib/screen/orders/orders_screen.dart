@@ -4,7 +4,7 @@ import 'package:virtual_store_flutter/common/custom_drawer/custom_drawer.dart';
 import 'package:virtual_store_flutter/common/empty_cart.dart';
 import 'package:virtual_store_flutter/common/login_card.dart';
 import 'package:virtual_store_flutter/model/orders_manager.dart';
-import 'package:virtual_store_flutter/common/order_tile.dart';
+import 'package:virtual_store_flutter/common/order/order_tile.dart';
 
 class OrdersScreen extends StatelessWidget {
   @override

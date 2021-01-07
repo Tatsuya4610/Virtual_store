@@ -9,6 +9,7 @@ import 'package:virtual_store_flutter/model/page_manager.dart';
 import 'package:virtual_store_flutter/model/product_manager.dart';
 import 'package:virtual_store_flutter/model/user_manager.dart';
 import 'package:virtual_store_flutter/screen/address/address_screen.dart';
+import 'package:virtual_store_flutter/screen/admin_orders/admin_order_screen.dart';
 import 'package:virtual_store_flutter/screen/base/base_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:virtual_store_flutter/screen/cart/cart_screen.dart';
@@ -105,6 +106,7 @@ class MyApp extends StatelessWidget {
           AddressScreen.id: (context) => AddressScreen(),
           CheckoutScreen.id: (context) => CheckoutScreen(),
           ConfirmationScreen.id: (context) => ConfirmationScreen(),
+          AdminOrdersScreen.id: (context) => AdminOrdersScreen(),
         },
       ),
     );
