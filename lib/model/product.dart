@@ -128,7 +128,7 @@ class Product extends ChangeNotifier {
     }
 
     for(final image in images) { //削除されたImageのfirebase削除。
-      if (!newImage.contains(image)) {
+      if (!newImage.contains(image) && image.contains('firebase')) { //&& image.contains('firebase')、直接firebaseに追加した画像用
         try {
           //編集された新しいImageリストに含まれていない既存のImage。(削除されたImage)
           final ref = await storage.getReferenceFromUrl(

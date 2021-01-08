@@ -71,15 +71,17 @@ class AdminOrdersScreen extends StatelessWidget {
                     },
                   ),
                 ),
+              SizedBox(height: 120),//フィルター分だけ下に余白。
             ],
           ),
-          minHeight: 40,
+          minHeight: 40, //*height同じだと見応え綺麗。
           maxHeight: 250,
           panel: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               GestureDetector(
-                onTap: () { //スクロールが閉じている、開いている状態時。
+                onTap: () {
+                  //スクロールが閉じている、開いている状態時。スクロールしなくてもタップで開閉・
                   if (panelController.isPanelClosed) {
                     panelController.open();
                   } else {
@@ -87,7 +89,7 @@ class AdminOrdersScreen extends StatelessWidget {
                   }
                 },
                 child: Container(
-                  height: 40,
+                  height: 40, //**height同じだと見応え綺麗。
                   child: Text(
                     'フィルター',
                     style: TextStyle(
@@ -99,12 +101,18 @@ class AdminOrdersScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              Expanded(child: Column(
+              Expanded(
+                  child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: Status.values.map((e) {
-                  return CheckboxListTile(title: Text(Order.getStatusText(e)),dense: true, value: true, onChanged: (value) {
-
-                  });
+                  return CheckboxListTile(
+                      title: Text(Order.getStatusText(e)),
+                      dense: true,
+                      activeColor: Theme.of(context).primaryColor,
+                      value: adminOrdersManager.statusFilter.contains(e),
+                      onChanged: (value) {
+                        adminOrdersManager.setStatusFilter(status: e, enable: value,);
+                      });
                 }).toList(),
               ))
             ],

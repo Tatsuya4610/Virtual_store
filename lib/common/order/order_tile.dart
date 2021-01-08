@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:virtual_store_flutter/common/order/cancel_dialog.dart';
 import 'package:virtual_store_flutter/model/order.dart';
 import 'package:virtual_store_flutter/common/order/order_product_tile.dart';
+
+import 'done_dialog.dart';
 
 class OrderTile extends StatelessWidget {
   OrderTile(this.orders, {this.showControls = false});
@@ -60,22 +63,30 @@ class OrderTile extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 children: <Widget>[
                   FlatButton(
-                    onPressed: orders.cancel,
+                    onPressed:  () {
+                      showDialog(context: context,builder: (_) => CancelDialog(orders));
+                    },
                     textColor: Colors.red,
                     child: Text('キャンセル'),
                   ),
                   FlatButton(
-                    onPressed: orders.back,
+                    onPressed: (orders.status != Status.preparing) ? () {
+                      orders.preparing();
+                    } : null,
                     child:  Text('準備'),
                   ),
                   FlatButton(
-                    onPressed: orders.advance,
+                    onPressed: (orders.status != Status.transporting) ? () {
+                      orders.transporting();
+                    } : null,
                     child:  Text('配達中'),
                   ),
                   FlatButton(
-                    onPressed: () {},
+                    onPressed: (orders.status != Status.delivered) ? () {
+                      showDialog(context: context,builder: (_) => DoneDialog(orders));
+                    } : null,
                     textColor: Theme.of(context).primaryColor,
-                    child: Text('配達'),
+                    child: Text('完了'),
                   ),
                 ],
               ),

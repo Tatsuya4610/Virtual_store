@@ -5,14 +5,17 @@ import 'package:virtual_store_flutter/model/order.dart';
 import 'package:virtual_store_flutter/model/user.dart';
 
 class AdminOrderManager extends ChangeNotifier {
-  List<Order> _orders = [];
+  final List<Order> _orders = [];
   User userFilter;
+  List<Status> statusFilter = [];
 
   List<Order> get filterOrders { //ユーザーごとにフィルターされたOrder
     List<Order> output = _orders.reversed.toList();
     if (userFilter != null) {
       output = output.where((element) => element.userId == userFilter.id).toList();
     }
+
+    output = output.where((element) => statusFilter.contains(element.status)).toList();//statusごとのフィルター。
     return output;
   }
 
@@ -57,6 +60,15 @@ class AdminOrderManager extends ChangeNotifier {
 
   void setUserFilter(User user) {
     userFilter = user;
+    notifyListeners();
+  }
+
+  void setStatusFilter({Status status, bool enable}) {
+    if (enable) { //ボタンが押されていたら、押されているstatusを追加。
+      statusFilter.add(status);
+    } else {
+      statusFilter.remove(status);
+    }
     notifyListeners();
   }
 

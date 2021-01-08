@@ -44,29 +44,49 @@ class Order {
     });
   }
 
-  Function get back {
-    return (status.index >= Status.transporting.index) ? () {
-      status = Status.values[status.index - 1];
-      firestore.collection('orders').document(orderId).updateData({
-        'status' : status.index
-      });
-    } : null;
-  }
-  Function get advance {
-    return (status.index <= Status.transporting.index) ? () {
-      status = Status.values[status.index + 1];
-      firestore.collection('orders').document(orderId).updateData({
-        'status' : status.index
-      });
-    } : null;
-  }
+  // Function get back { //
+  //   return (status.index >= Status.transporting.index) ? () {
+  //     status = Status.values[status.index - 1];
+  //     firestore.collection('orders').document(orderId).updateData({
+  //       'status' : status.index
+  //     });
+  //   } : null;
+  // }
+  // Function get advance {
+  //   return (status.index <= Status.transporting.index) ? () {
+  //     status = Status.values[status.index + 1];
+  //     firestore.collection('orders').document(orderId).updateData({
+  //       'status' : status.index
+  //     });
+  //   } : null;
+  // }
 
-  void cancel() {
+  void cancel() { //キャンセル
     status = Status.cancel;
     firestore.collection('orders').document(orderId).updateData({
       'status' : status.index
     });
   }
+  void done() { //完了
+    status = Status.delivered;
+    firestore.collection('orders').document(orderId).updateData({
+      'status' : status.index
+    });
+  }
+
+  void preparing() { //準備
+    status = Status.preparing;
+    firestore.collection('orders').document(orderId).updateData({
+      'status' : status.index
+    });
+  }
+  void transporting() { //配達
+    status = Status.transporting;
+    firestore.collection('orders').document(orderId).updateData({
+      'status' : status.index
+    });
+  }
+
 
   String orderId;
   List<CartProduct> items;
