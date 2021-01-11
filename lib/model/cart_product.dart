@@ -107,6 +107,7 @@ class CartProduct with ChangeNotifier {
 
   bool get hasStock {
     //リアルタイムストック数
+    if (product != null && product.deleted) return false;
     final size = itemSize;
     if (size == null) {
       return false;

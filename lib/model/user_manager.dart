@@ -14,7 +14,12 @@ class UserManager extends ChangeNotifier {
   User user;
   bool _loading = false;
   bool get loading => _loading;
+  set loading(bool value) {
+    _loading = value;
+    notifyListeners();
+  }
   bool get islLogin => user != null; //userの情報があるならログイン状態。
+
 
   Future<void> signIn({User user, Function onFail, Function onSuccess}) async {
     loading = true;
@@ -57,10 +62,9 @@ class UserManager extends ChangeNotifier {
     loading = false;
   }
 
-  set loading(bool value) {
-    _loading = value;
-    notifyListeners();
-  }
+
+
+
 
   void signOut() {
     _auth.signOut();

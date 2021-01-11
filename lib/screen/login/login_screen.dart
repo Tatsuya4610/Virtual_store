@@ -69,50 +69,48 @@ class LoginScreen extends StatelessWidget {
                       },
                     ),
                     child,
-                    SizedBox(
-                      height: 44,
-                      child: RaisedButton(
-                        onPressed: userManager.loading
-                            ? null
-                            : () {
-                                //ログイン確認中は使用不可。
-                                _formKey.currentState.validate(); //validateを確認。
-                                if (_passwordController.text.isEmpty) { //これがないとなぜかパスワードが間違えてますとSnackBarが出る。
-                                  return;
-                                }
-                                userManager.signIn(
-                                  //firebaseにサインイン。
-                                  user: User(
-                                    email: _emailController.text.trim(),
-                                    password: _passwordController.text.trim(),
-                                  ),
-                                  onFail: (error) {
-                                    //日本語変換したエラーを受け取り。
-                                    _scaffoldKey.currentState.showSnackBar(
-                                      SnackBar(
-                                        //エラーメッセージ画面。
-                                        backgroundColor: Colors.red,
-                                        content: Text(error),
-                                      ),
-                                    );
-                                  },
-                                  onSuccess: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                );
-                              },
-                        child: userManager.loading
-                            ? CircularProgressIndicator(
-                                valueColor:
-                                    AlwaysStoppedAnimation(Colors.white),
-                              )
-                            : Text('ログイン'),
-                        color: Theme.of(context).primaryColor,
-                        disabledColor: Theme.of(context)
-                            .primaryColor
-                            .withAlpha(100), //ボタン無効中の色。
-                        textColor: Colors.white,
-                      ),
+                    RaisedButton(
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,//マージンなし。
+                      onPressed: userManager.loading
+                          ? null
+                          : () {
+                              //ログイン確認中は使用不可。
+                              _formKey.currentState.validate(); //validateを確認。
+                              if (_passwordController.text.isEmpty) { //これがないとなぜかパスワードが間違えてますとSnackBarが出る。
+                                return;
+                              }
+                              userManager.signIn(
+                                //firebaseにサインイン。
+                                user: User(
+                                  email: _emailController.text.trim(),
+                                  password: _passwordController.text.trim(),
+                                ),
+                                onFail: (error) {
+                                  //日本語変換したエラーを受け取り。
+                                  _scaffoldKey.currentState.showSnackBar(
+                                    SnackBar(
+                                      //エラーメッセージ画面。
+                                      backgroundColor: Colors.red,
+                                      content: Text(error),
+                                    ),
+                                  );
+                                },
+                                onSuccess: () {
+                                  Navigator.of(context).pop();
+                                },
+                              );
+                            },
+                      child: userManager.loading
+                          ? CircularProgressIndicator(
+                              valueColor:
+                                  AlwaysStoppedAnimation(Colors.white),
+                            )
+                          : Text('ログイン'),
+                      color: Theme.of(context).primaryColor,
+                      disabledColor: Theme.of(context)
+                          .primaryColor
+                          .withAlpha(100), //ボタン無効中の色。
+                      textColor: Colors.white,
                     ),
                   ],
                 );

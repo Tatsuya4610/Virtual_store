@@ -24,7 +24,7 @@ class ProductScreen extends StatelessWidget {
           actions: <Widget>[
             Consumer<UserManager>(
               builder: (_, userManager, __) {
-                if (userManager.adminEnabled) {
+                if (userManager.adminEnabled && !product.deleted) {
                   return IconButton(
                     icon: Icon(Icons.edit),
                     onPressed: () {
@@ -96,22 +96,27 @@ class ProductScreen extends StatelessWidget {
                     ),
                   ),
                   Text(product.description),
-                  Padding(
-                    padding: EdgeInsets.only(top: 15, bottom: 8),
-                    child: Text(
-                      'サイズ別',
-                      style:
-                          TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+                  if(product.deleted)
+                    Text('この商品は削除されました',style: TextStyle(color: Colors.red),)
+                  else
+                  ...[ //Widget(List)にしてelseに2つ反映。
+                    Padding(
+                      padding: EdgeInsets.only(top: 15, bottom: 8),
+                      child: Text(
+                        'サイズ別',
+                        style:
+                        TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+                      ),
                     ),
-                  ),
-                  Wrap(
-                    //囲い
-                    spacing: 5, //囲い間の幅(横)。
-                    runSpacing: 5, //囲い間の幅(縦)。
-                    children: product.sizes.map((sizesMap) {
-                      return SizeWidget(size: sizesMap);
-                    }).toList(),
-                  ),
+                    Wrap(
+                      //囲い
+                      spacing: 5, //囲い間の幅(横)。
+                      runSpacing: 5, //囲い間の幅(縦)。
+                      children: product.sizes.map((sizesMap) {
+                        return SizeWidget(size: sizesMap);
+                      }).toList(),
+                    ),
+                  ],
                   SizedBox(height: 20),
                   if (product.hasStock) //全てストックがある場合のみ表示。
                     Consumer2<UserManager, Product>(

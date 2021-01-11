@@ -7,7 +7,7 @@ import 'package:virtual_store_flutter/model/item_size.dart';
 
 class Product extends ChangeNotifier {
 
-  Product({this.id,this.name,this.description,this.images,this.sizes}) {
+  Product({this.id,this.name,this.description,this.images,this.sizes,this.deleted = false}) {
     images = images ?? []; //nullなら空。ProductsScreenから直接来た場合は何も情報なし。
     sizes = sizes ?? [];
   }
@@ -17,6 +17,7 @@ class Product extends ChangeNotifier {
     name = document['name'];
     description = document['description'];
     images = List<String>.from(document.data['images']);
+    deleted = (document.data['deleted'] ?? false) as bool;
     sizes = (document.data['sizes'] as List<dynamic> ?? []) //全ての商品にfirebase上にsizesが登録されていない場合、mapでnullが返される為、??[]でもしくは0と表現要。
         .map((sizeMap) => ItemSize.formMap(sizeMap as Map<String, dynamic>))
         .toList();
@@ -42,6 +43,8 @@ class Product extends ChangeNotifier {
     _loading = value;
     notifyListeners();
   }
+
+  bool deleted;
 
 
 
@@ -89,6 +92,7 @@ class Product extends ChangeNotifier {
       description: description,
       images: List.from(images), //新しいリストを生成。
       sizes: sizes.map((size) => size.clone()).toList(), //新しいリストを生成。
+      deleted: deleted,
     );
   }
 
@@ -102,6 +106,7 @@ class Product extends ChangeNotifier {
       'name' : name,
       'description' : description,
       'sizes' : exportSizeList(),
+      'deleted' : deleted,
     };
     if (id == null) { //新規登録編集の場合はidなし。
       final doc = await firestore.collection('products').add(data);
@@ -147,6 +152,13 @@ class Product extends ChangeNotifier {
 
     images = updateImages; //問題なくupdateされたらimagesと同じ。updateされたら再読み込み。
     loading = false;
+  }
+
+  void delete(){
+    //firebaseにdeletedを設けて、見かけ上で削除する。
+    firestore.document('products/$id').updateData({'deleted' : true});
+    // firestore.document('products/$id').delete(); これで完全にデータ削除出来るが、購入履歴やカート内で
+    //情報が受け取れずエラーになる為上記はしない。
   }
 
 

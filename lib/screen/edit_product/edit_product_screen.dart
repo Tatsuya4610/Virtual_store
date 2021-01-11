@@ -20,6 +20,13 @@ class EditProductScreen extends StatelessWidget {
         appBar: AppBar(
           title: (product.name != null) ? Text('商品編集画面') : Text('新規作成画面'),
           centerTitle: true,
+          actions: <Widget>[
+            if(product.id != null) //渡されたproductにデーターがある場合。クローンデータ(新規登録)ではない場合。
+              IconButton(icon: Icon(Icons.delete), onPressed: (){
+                context.read<ProductManager>().delete(product);
+                Navigator.of(context).popUntil((route) => route.isFirst);
+              })
+          ],
         ),
         backgroundColor: Colors.white,
         body: Form(

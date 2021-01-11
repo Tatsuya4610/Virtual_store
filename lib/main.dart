@@ -7,6 +7,7 @@ import 'package:virtual_store_flutter/model/home_manager.dart';
 import 'package:virtual_store_flutter/model/orders_manager.dart';
 import 'package:virtual_store_flutter/model/page_manager.dart';
 import 'package:virtual_store_flutter/model/product_manager.dart';
+import 'package:virtual_store_flutter/model/stores_manager.dart';
 import 'package:virtual_store_flutter/model/user_manager.dart';
 import 'package:virtual_store_flutter/screen/address/address_screen.dart';
 import 'package:virtual_store_flutter/screen/admin_orders/admin_order_screen.dart';
@@ -39,7 +40,8 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (_) => UserManager(),
-          lazy: false, //遅延実行しない。
+          lazy: false, //遅延実行しない。立ち開けた時にすぐデーターを取得する。
+          //ない場合は実装していない限り呼ばれない。
         ),
         ChangeNotifierProvider(
           create: (_) => ProductManager(),
@@ -56,6 +58,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => Address(),
           lazy: false,
+        ),
+        ChangeNotifierProvider(
+          create: (_) => StoresManager(),
         ),
         ChangeNotifierProxyProvider<UserManager, CartManager>(
           //ログインユーザーの切替りに対応。
