@@ -4,6 +4,17 @@ import 'package:virtual_store_flutter/screen/checkout/components/card_text_field
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 
 class CardFront extends StatelessWidget {
+  CardFront({
+    this.nameFocus,
+    this.dateFocus,
+    this.numberFocus,
+    this.finished,
+  });
+
+  final FocusNode numberFocus;
+  final FocusNode dateFocus;
+  final FocusNode nameFocus;
+  final VoidCallback finished;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +28,8 @@ class CardFront extends StatelessWidget {
         color: Colors.teal[800],
         child: Row(
           children: <Widget>[
-            Expanded(child: Column(
+            Expanded(
+                child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 CardTextField(
@@ -25,14 +37,19 @@ class CardFront extends StatelessWidget {
                   hintText: '0000 0000 0000 0000',
                   textInputType: TextInputType.number,
                   bold: true,
+                  focusNode: numberFocus,
                   inputFormatter: [
-                    CreditCardNumberInputFormatter(onCardSystemSelected: (CardSystemData cardSystemData){
+                    CreditCardNumberInputFormatter(
+                        onCardSystemSelected: (CardSystemData cardSystemData) {
                       print(cardSystemData.system);
-                    }),//Dartパッケージ。クレジット。
+                    }), //Dartパッケージ。クレジット。
                   ],
                   validator: (number) {
-                    if(number.length != 19) return '正しく入力してください';
+                    if (number.length != 19) return '正しく入力してください';
                     return null;
+                  },
+                  onSubmitted: (_) {
+                    dateFocus.requestFocus(); //キーボードEnterで指定のTextFieldへフォーカス。
                   },
                 ),
                 CardTextField(
@@ -40,12 +57,16 @@ class CardFront extends StatelessWidget {
                   hintText: '01/21',
                   textInputType: TextInputType.number,
                   bold: false,
+                  focusNode: dateFocus,
                   inputFormatter: [
-                    CreditCardExpirationDateFormatter()//Dartパッケージ。
+                    CreditCardExpirationDateFormatter() //Dartパッケージ。
                   ],
                   validator: (date) {
-                    if(date.length != 5) return '正しく入力してください';
+                    if (date.length != 5) return '正しく入力してください';
                     return null;
+                  },
+                  onSubmitted: (_) {
+                    nameFocus.requestFocus();
                   },
                 ),
                 CardTextField(
@@ -53,9 +74,13 @@ class CardFront extends StatelessWidget {
                   hintText: 'TARO YAMADA',
                   textInputType: TextInputType.text,
                   bold: true,
+                  focusNode: nameFocus,
                   validator: (name) {
-                    if(name.isEmpty) return '名前を入力してください';
+                    if (name.isEmpty) return '名前を入力してください';
                     return null;
+                  },
+                  onSubmitted: (_) {
+                    finished();
                   },
                 ),
               ],

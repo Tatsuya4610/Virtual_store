@@ -6,6 +6,11 @@ import 'package:virtual_store_flutter/screen/checkout/components/card_front.dart
 class CreditCardWidget extends StatelessWidget {
   final GlobalKey<FlipCardState> _cardKey = GlobalKey<FlipCardState>();
 
+  final FocusNode numberFocus = FocusNode();
+  final FocusNode dateFocus = FocusNode();
+  final FocusNode nameFocus = FocusNode();
+  final FocusNode cvvFocus = FocusNode();
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -19,8 +24,18 @@ class CreditCardWidget extends StatelessWidget {
               direction: FlipDirection.HORIZONTAL, //水平の動き
               speed: 700,
               flipOnTouch: false, //タッチで回転させない。
-              front: CardFront(),
-              back: CardBack(),
+              front: CardFront(
+                numberFocus: numberFocus,
+                dateFocus: dateFocus,
+                nameFocus: nameFocus,
+                finished: (){ //表面の入力完了キーボードEnter後、裏面フォーカス。
+                  _cardKey.currentState.toggleCard();
+                  cvvFocus.requestFocus();
+                },
+              ),
+              back: CardBack(
+                cvvFocus: cvvFocus,
+              ),
             ),
             FlatButton(
               onPressed: () {
