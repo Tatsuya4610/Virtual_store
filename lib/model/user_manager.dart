@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:virtual_store_flutter/helper/firebase_errors.dart';
 import 'package:virtual_store_flutter/model/user.dart';
 
@@ -11,7 +10,7 @@ class UserManager extends ChangeNotifier {
   }
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  Users user;
+  Users users;
   bool _loading = false;
   bool get loading => _loading;
   set loading(bool value) {
@@ -19,21 +18,21 @@ class UserManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool get islLogin => user != null; //userの情報があるならログイン状態。
+  bool get islLogin => users != null; //userの情報があるならログイン状態。
 
   Future<void> signIn({Users user, Function onFail, Function onSuccess}) async {
     loading = true;
     try {
       final result = await _auth.signInWithEmailAndPassword(
-        //firebaseにサインイン
+        // firebaseにサインイン
         email: user.email,
         password: user.password,
       );
 
       await _loadCurrentUser(firebaseUser: result.user);
       onSuccess(); //成功した場合。
-    } on PlatformException catch (e) {
-      onFail(getErrorString(e.code)); //エラーコード渡し日本語化
+    } on FirebaseAuthException catch (error) {
+      onFail(getErrorString(error.code));
     }
     loading = false;
   }
@@ -47,11 +46,11 @@ class UserManager extends ChangeNotifier {
         password: user.password,
       );
       user.id = result.user.uid; //user.uid渡し。
-      this.user = user; //受け取ったuserをuserへ上書き。
+      this.users = user; //受け取ったuserをuserへ上書き。
       await user.saveData(); //ユーザーのデーターをfirebaseに追加。
       user.saveToken();
       onSuccess();
-    } on PlatformException catch (error) {
+    } on FirebaseAuthException catch (error) {
       onFail(
         getErrorString(error.code), //エラー日本語化
       );
@@ -61,7 +60,7 @@ class UserManager extends ChangeNotifier {
 
   void signOut() {
     _auth.signOut();
-    user = null;
+    users = null;
     notifyListeners();
   }
 
@@ -72,21 +71,21 @@ class UserManager extends ChangeNotifier {
           .collection('users')
           .doc(currentUser.uid)
           .get(); //ログイン中のアカウントのデータを取得。
-      user = Users.formDocument(docUser); //取得したデーターをformDocumentに登録。
-      user.saveToken();
+      users = Users.formDocument(docUser); //取得したデーターをformDocumentに登録。
+      users.saveToken();
 
       final docAdmin = await FirebaseFirestore.instance
           .collection('admin')
-          .doc(user.id)
+          .doc(users.id)
           .get();
       if (docAdmin.exists) {
         //ログインしたuserがAdmin(管理者)として登録されていたら。
-        user.admin = true;
+        users.admin = true;
       }
       notifyListeners();
     }
   }
 
-  bool get adminEnabled => user != null && user.admin; //管理者が有効かどうか。
+  bool get adminEnabled => users != null && users.admin; //管理者が有効かどうか。
 
 }

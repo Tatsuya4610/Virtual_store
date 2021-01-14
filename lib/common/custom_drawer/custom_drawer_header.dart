@@ -24,7 +24,7 @@ class CustomDrawerHeader extends StatelessWidget {
                 ),
               ),
               Text(
-                '${userManager.user?.name ?? ''}',
+                '${userManager.users?.name ?? ''}',
                 overflow: TextOverflow.ellipsis, //テキストが多い場合は省略記号。
                 maxLines: 2,
                 style: TextStyle(

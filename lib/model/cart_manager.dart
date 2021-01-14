@@ -16,7 +16,7 @@ class CartManager extends ChangeNotifier {
 
 
   void updateUser(UserManager userManager) {
-    users = userManager.user; //ログイン中のユーザーを記録。ユーザーが変更するたびに受け取る。
+    users = userManager.users; //ログイン中のユーザーを記録。ユーザーが変更するたびに受け取る。
     items.clear(); //ユーザーが変わった場合は元のカートリストをクリア。
     if (users != null) {
       //ログアウトの可能性もある為、ユーザーの切替りまたログインが確認できた場合。
