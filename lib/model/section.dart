@@ -80,10 +80,8 @@ class Section extends ChangeNotifier {
         //カメラやフォトギャラリーの画像はUuidでid作成しとりあえず保存。
         final UploadTask task =
             storageRef.child(Uuid().v1()).putFile(item.image as File);
-        final TaskSnapshot snapshot =
-             task.snapshot; //登録した画像の情報を受け取。
         final String url =
-            await snapshot.ref.getDownloadURL(); //保存された画像のダウンロードurl
+            await (await task).ref.getDownloadURL(); //保存された画像のダウンロードurl
         item.image = url;
       }
       for (final original in originalItems) {
