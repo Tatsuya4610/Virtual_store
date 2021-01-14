@@ -4,7 +4,9 @@ import 'package:provider/provider.dart';
 import 'package:virtual_store_flutter/common/price_card.dart';
 import 'package:virtual_store_flutter/model/cart_manager.dart';
 import 'package:virtual_store_flutter/model/checkout_manager.dart';
+import 'package:virtual_store_flutter/screen/cart/cart_screen.dart';
 import 'package:virtual_store_flutter/screen/checkout/components/credit_card_widget.dart';
+import 'package:virtual_store_flutter/screen/confirmation/confirmation_screen.dart';
 
 class CheckoutScreen extends StatelessWidget {
   static const id = 'CheckoutScreen';
@@ -21,53 +23,58 @@ class CheckoutScreen extends StatelessWidget {
           appBar: AppBar(
             title: Text('最終確認'),
           ),
-          body: Consumer<CheckoutManager>(
-            builder: (_, checkoutManager, __) {
-              if (checkoutManager.loading) {
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+          body: GestureDetector(
+            onTap: () {
+              FocusScope.of(context).unfocus(); //画面タッチ時にキーボードダウン
+            },
+            child: Consumer<CheckoutManager>(
+              builder: (_, checkoutManager, __) {
+                if (checkoutManager.loading) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        CircularProgressIndicator(valueColor: AlwaysStoppedAnimation(Colors.white)),
+                        SizedBox(height: 15),
+                        Text(
+                          '注文中',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+                return Form(
+                  key: formKey,
+                  child: ListView(
                     children: <Widget>[
-                      CircularProgressIndicator(valueColor: AlwaysStoppedAnimation(Colors.white)),
-                      SizedBox(height: 15),
-                      Text(
-                        '注文中',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold),
+                      CreditCardWidget(),
+                      PriceCard(
+                        buttonText: '注文を確定する',
+                        onPressed: () {
+                          if(formKey.currentState.validate()){
+                            print('完了');
+                            checkoutManager.checkout(
+                                onStockFail: (e) { //在庫切で注文に失敗した場合はUI更新済みのCartScreenへ
+                                  Navigator.popUntil(
+                                      context, ModalRoute.withName(CartScreen.id));
+                                },
+                                onSuccess: (order) { //注文完了した場合
+                                  Navigator.popUntil(context, (route) => route.isFirst);
+                                  Navigator.of(context).pushNamed(ConfirmationScreen.id, arguments: order);
+                                }
+                            );
+                          }
+                        },
                       ),
                     ],
                   ),
                 );
-              }
-              return Form(
-                key: formKey,
-                child: ListView(
-                  children: <Widget>[
-                    CreditCardWidget(),
-                    PriceCard(
-                      buttonText: '注文を確定する',
-                      onPressed: () {
-                        if(formKey.currentState.validate()){
-                          print('完了');
-                          // checkoutManager.checkout(
-                          //     onStockFail: (e) { //在庫切で注文に失敗した場合はUI更新済みのCartScreenへ
-                          //       Navigator.popUntil(
-                          //           context, ModalRoute.withName(CartScreen.id));
-                          //     },
-                          //     onSuccess: (order) { //注文完了した場合
-                          //       Navigator.popUntil(context, (route) => route.isFirst);
-                          //       Navigator.of(context).pushNamed(ConfirmationScreen.id, arguments: order);
-                          //     }
-                          // );
-                        }
-                      },
-                    ),
-                  ],
-                ),
-              );
-            },
+              },
+            ),
           )),
     );
   }

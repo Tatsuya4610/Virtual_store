@@ -3,13 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:virtual_store_flutter/screen/checkout/components/card_back.dart';
 import 'package:virtual_store_flutter/screen/checkout/components/card_front.dart';
 
-class CreditCardWidget extends StatelessWidget {
+class CreditCardWidget extends StatefulWidget {
+  @override
+  _CreditCardWidgetState createState() => _CreditCardWidgetState();
+}
+
+class _CreditCardWidgetState extends State<CreditCardWidget> {
   final GlobalKey<FlipCardState> _cardKey = GlobalKey<FlipCardState>();
 
   final FocusNode numberFocus = FocusNode();
+
   final FocusNode dateFocus = FocusNode();
+
   final FocusNode nameFocus = FocusNode();
+
   final FocusNode cvvFocus = FocusNode();
+
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +37,8 @@ class CreditCardWidget extends StatelessWidget {
                 numberFocus: numberFocus,
                 dateFocus: dateFocus,
                 nameFocus: nameFocus,
-                finished: (){ //表面の入力完了キーボードEnter後、裏面フォーカス。
+                finished: () {
+                  //表面の入力完了キーボードEnter後、裏面フォーカス。
                   _cardKey.currentState.toggleCard();
                   cvvFocus.requestFocus();
                 },
@@ -39,7 +49,7 @@ class CreditCardWidget extends StatelessWidget {
             ),
             FlatButton(
               onPressed: () {
-                _cardKey.currentState.toggleCard();//タッチではなくここで回転。
+                _cardKey.currentState.toggleCard(); //タッチではなくここで回転。
               },
               textColor: Colors.white,
               padding: EdgeInsets.zero,

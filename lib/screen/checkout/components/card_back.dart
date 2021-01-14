@@ -49,9 +49,7 @@ class CardBack extends StatelessWidget {
                         }
                         return null;
                       },
-                      onSubmitted: (_){
-
-                      },
+                      onSubmitted: null,
                     ),
                   ),
                 ),

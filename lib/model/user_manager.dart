@@ -31,7 +31,6 @@ class UserManager extends ChangeNotifier {
       );
 
       await _loadCurrentUser(firebaseUser: result.user);
-
       onSuccess(); //成功した場合。
     } on PlatformException catch (error) {
       onFail(
@@ -53,6 +52,7 @@ class UserManager extends ChangeNotifier {
       user.id = result.user.uid; //user.uid渡し。
       this.user = user; //受け取ったuserをuserへ上書き。
       await user.saveData(); //ユーザーのデーターをfirebaseに追加。
+      user.saveToken();
       onSuccess();
     } on PlatformException catch (error) {
       onFail(
@@ -82,6 +82,7 @@ class UserManager extends ChangeNotifier {
           .document(currentUser.uid)
           .get();//ログイン中のアカウントのデータを取得。
       user = User.formDocument(docUser);//取得したデーターをformDocumentに登録。
+      user.saveToken();
 
       final docAdmin = await Firestore.instance.collection('admin').document(user.id).get();
       if (docAdmin.exists) { //ログインしたuserがAdmin(管理者)として登録されていたら。

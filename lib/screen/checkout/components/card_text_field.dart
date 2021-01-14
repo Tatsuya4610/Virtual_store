@@ -13,7 +13,8 @@ class CardTextField extends StatelessWidget {
     this.textAlign = TextAlign.start,
     this.focusNode,
     this.onSubmitted,
-  });
+  }) : textInputAction = //キーボードEnterが無限ループする為、閉じるタイミングを設定。
+            onSubmitted == null ? TextInputAction.done : TextInputAction.next;
 
   final String title;
   final bool bold;
@@ -24,6 +25,7 @@ class CardTextField extends StatelessWidget {
   final TextAlign textAlign;
   final FocusNode focusNode;
   final Function(String) onSubmitted;
+  final TextInputAction textInputAction;
 
   @override
   Widget build(BuildContext context) {
@@ -79,6 +81,7 @@ class CardTextField extends StatelessWidget {
                   textAlign: textAlign,
                   focusNode: focusNode,
                   onFieldSubmitted: onSubmitted,
+                  textInputAction: textInputAction,
                   onChanged: (text) {
                     //個別にエラーを認識。ない場合、全ての入力を正しくする必要あり。
                     state.didChange(text);
