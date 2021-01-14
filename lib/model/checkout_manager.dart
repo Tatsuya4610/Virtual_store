@@ -14,7 +14,7 @@ class CheckoutManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  final Firestore firestore = Firestore.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   void updateCart(CartManager cartManager) {
     //カート更新
@@ -41,16 +41,16 @@ class CheckoutManager extends ChangeNotifier {
 
   Future<int> _getOrderId() async {
     //注文カウント。番号。
-    final ref = firestore.document('shopLocation/ordercount');
+    final ref = firestore.doc('shopLocation/ordercount');
     try {
       final result = await firestore.runTransaction((tx) async {
         //カート内の取引。
         final doc = await tx.get(ref);
-        final orderId = doc.data['current'] as int; //取引カウント取得。
-        await tx.update(ref, {'current': orderId + 1}); //取引カウント更新。
+        final orderId = doc.data()['current'] as int; //取引カウント取得。
+        tx.update(ref, {'current': orderId + 1}); //取引カウント更新。
         return {'orderId': orderId};
       });
-      return result['orderId'] as int; //取引カウント返し。
+      return result['orderId']; //取引カウント返し。
     } catch (e) {
       return Future.error('注文に失敗。');
     }
@@ -70,7 +70,7 @@ class CheckoutManager extends ChangeNotifier {
         } else {
           final doc = await tx.get(
             //カート内の各アイテムをfirebaseのproductで受け取り。
-            firestore.document('products/${cartProduct.cartProductId}'),
+            firestore.doc('products/${cartProduct.cartProductId}'),
           );
           product = Product.fromDocument(doc); //カート内を1年放置すると1年前の情報になる為、最新のproductを取得。
         }
@@ -93,7 +93,7 @@ class CheckoutManager extends ChangeNotifier {
         return Future.error('在庫切の商品あり');
       }
       for (final product in productsToUpdate) { //問題ない商品を更新。減算
-        tx.update(firestore.document('products/${product.id}'), {
+        tx.update(firestore.doc('products/${product.id}'), {
           'sizes': product.exportSizeList(),
         });
       }

@@ -27,14 +27,14 @@ class AdminOrdersScreen extends StatelessWidget {
           controller: panelController,
           body: Column(
             children: <Widget>[
-              if (adminOrdersManager.userFilter != null)
+              if (adminOrdersManager.usersFilter != null)
                 Padding(
                   padding: EdgeInsets.fromLTRB(15, 0, 15, 2),
                   child: Row(
                     children: <Widget>[
                       Expanded(
                         child: Text(
-                          '${adminOrdersManager.userFilter.name}の注文',
+                          '${adminOrdersManager.usersFilter.name}の注文',
                           style: TextStyle(
                             fontWeight: FontWeight.w800,
                             color: Colors.white,

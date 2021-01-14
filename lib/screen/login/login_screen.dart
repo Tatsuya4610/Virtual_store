@@ -81,7 +81,7 @@ class LoginScreen extends StatelessWidget {
                               }
                               userManager.signIn(
                                 //firebaseにサインイン。
-                                user: User(
+                                user: Users(
                                   email: _emailController.text.trim(),
                                   password: _passwordController.text.trim(),
                                 ),

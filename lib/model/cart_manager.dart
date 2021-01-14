@@ -9,15 +9,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class CartManager extends ChangeNotifier {
   List<CartProduct> items = [];
 
-  User user;
+  Users users;
   Address address;
 
   num productsPrice = 0;
 
+
   void updateUser(UserManager userManager) {
-    user = userManager.user; //ログイン中のユーザーを記録。ユーザーが変更するたびに受け取る。
+    users = userManager.user; //ログイン中のユーザーを記録。ユーザーが変更するたびに受け取る。
     items.clear(); //ユーザーが変わった場合は元のカートリストをクリア。
-    if (user != null) {
+    if (users != null) {
       //ログアウトの可能性もある為、ユーザーの切替りまたログインが確認できた場合。
       _loadCartItems();
     }
@@ -26,8 +27,8 @@ class CartManager extends ChangeNotifier {
   Future<void> _loadCartItems() async {
     //ユーザー別のカートを取得。
     final QuerySnapshot cartSnap =
-    await user.cartReference.getDocuments(); //ユーザー別のカートのドキュメント情報。
-    items = cartSnap.documents
+    await users.cartReference.get(); //ユーザー別のカートのドキュメント情報。
+    items = cartSnap.docs
         .map(
           (doc) =>
       CartProduct.formDocument(doc)
@@ -50,11 +51,11 @@ class CartManager extends ChangeNotifier {
       cartProduct.addListener(
           _onItemUpdated); //cartProductのnotifyListeners(quantity+-)が呼び出されるたびに通知。＊
       items.add(cartProduct);
-      user.cartReference.add(
+      users.cartReference.add(
         cartProduct.toCartItemMap(), //user別にカートをfirebaseに追加。
       ).then((doc) =>
       cartProduct.cartId =
-          doc.documentID); //_loadCartItemsはドキュメントIDを取得出来るがaddToCartの場合は
+          doc.id); //_loadCartItemsはドキュメントIDを取得出来るがaddToCartの場合は
       //まだ追加仕立てでdoc.documentIDを受け取らないとcartProduct.cartIdに追加されていない。
       _onItemUpdated(); //productsPriceがfirebaseから受け取ったデーターではない時も更新出来るように受け取り。
     }
@@ -82,10 +83,10 @@ class CartManager extends ChangeNotifier {
 
   void _updateCartProduct(CartProduct cartProduct) {//firebaseデータ更新。
     if (cartProduct.cartId != null) {
-        user.cartReference
-          .document(cartProduct
+        users.cartReference
+          .doc(cartProduct
           .cartId)
-          .updateData(cartProduct.toCartItemMap(),
+          .update(cartProduct.toCartItemMap(),
       );
     }
 
@@ -93,7 +94,7 @@ class CartManager extends ChangeNotifier {
 
   void removeCart(CartProduct cartProduct) {
     items.removeWhere((item) => item.cartId == cartProduct.cartId); //items内を削除。
-    user.cartReference.document(cartProduct.cartId).delete(); //firebaseのカートを削除。
+    users.cartReference.doc(cartProduct.cartId).delete(); //firebaseのカートを削除。
     cartProduct.removeListener(
         _onItemUpdated); //各アイテムには、数量の更新後にnotifyListenerを呼び出すリスナーがあり、アイテムを削除するときは、
     //そのアイテムのリスナーも削除して、アプリの処理に使用されないようにする必要有り。他のアイテムには引き続きリスナーが含まれる。
@@ -110,7 +111,7 @@ class CartManager extends ChangeNotifier {
   void clear() {
     //firebase購入後のカート削除。
     for (final cartProduct in items) {
-      user.cartReference.document(cartProduct.cartId).delete();
+      users.cartReference.doc(cartProduct.cartId).delete();
     }
     items.clear();
     notifyListeners();

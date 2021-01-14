@@ -11,17 +11,17 @@ class UserManager extends ChangeNotifier {
   }
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  User user;
+  Users user;
   bool _loading = false;
   bool get loading => _loading;
   set loading(bool value) {
     _loading = value;
     notifyListeners();
   }
+
   bool get islLogin => user != null; //userの情報があるならログイン状態。
 
-
-  Future<void> signIn({User user, Function onFail, Function onSuccess}) async {
+  Future<void> signIn({Users user, Function onFail, Function onSuccess}) async {
     loading = true;
     try {
       final result = await _auth.signInWithEmailAndPassword(
@@ -32,16 +32,13 @@ class UserManager extends ChangeNotifier {
 
       await _loadCurrentUser(firebaseUser: result.user);
       onSuccess(); //成功した場合。
-    } on PlatformException catch (error) {
-      onFail(
-        //失敗した場合はgetErrorStringにerror.codeを渡して日本語変換し出力。
-        getErrorString(error.code),
-      );
+    } on PlatformException catch (e) {
+      onFail(getErrorString(e.code)); //エラーコード渡し日本語化
     }
     loading = false;
   }
 
-  Future<void> singUp({User user, Function onFail, Function onSuccess}) async {
+  Future<void> singUp({Users user, Function onFail, Function onSuccess}) async {
     loading = true;
     try {
       final result = await _auth.createUserWithEmailAndPassword(
@@ -62,30 +59,28 @@ class UserManager extends ChangeNotifier {
     loading = false;
   }
 
-
-
-
-
   void signOut() {
     _auth.signOut();
     user = null;
     notifyListeners();
   }
 
-
-  Future<void> _loadCurrentUser({FirebaseUser firebaseUser}) async {
-    final FirebaseUser currentUser =
-        await _auth.currentUser() ?? firebaseUser; //ログイン中のアカウント。この2つどちらか。
+  Future<void> _loadCurrentUser({User firebaseUser}) async {
+    final User currentUser = _auth.currentUser ?? firebaseUser; //ログイン中のアカウント。この2つどちらか。
     if (currentUser != null) {
-      final DocumentSnapshot docUser = await Firestore.instance
+      final DocumentSnapshot docUser = await FirebaseFirestore.instance
           .collection('users')
-          .document(currentUser.uid)
-          .get();//ログイン中のアカウントのデータを取得。
-      user = User.formDocument(docUser);//取得したデーターをformDocumentに登録。
+          .doc(currentUser.uid)
+          .get(); //ログイン中のアカウントのデータを取得。
+      user = Users.formDocument(docUser); //取得したデーターをformDocumentに登録。
       user.saveToken();
 
-      final docAdmin = await Firestore.instance.collection('admin').document(user.id).get();
-      if (docAdmin.exists) { //ログインしたuserがAdmin(管理者)として登録されていたら。
+      final docAdmin = await FirebaseFirestore.instance
+          .collection('admin')
+          .doc(user.id)
+          .get();
+      if (docAdmin.exists) {
+        //ログインしたuserがAdmin(管理者)として登録されていたら。
         user.admin = true;
       }
       notifyListeners();

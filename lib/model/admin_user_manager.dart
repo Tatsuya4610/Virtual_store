@@ -5,9 +5,9 @@ import 'package:virtual_store_flutter/model/user_manager.dart';
 // import 'package:faker/faker.dart';
 
 class AdminUserManager extends ChangeNotifier {
-  List<User> users = [];
+  List<Users> users = [];
 
-  final Firestore firestore = Firestore.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   void updateUser(UserManager userManager) {
     if (userManager.adminEnabled) {
@@ -24,8 +24,8 @@ class AdminUserManager extends ChangeNotifier {
     //   ));
     // }
 
-    firestore.collection('users').getDocuments().then((snapshot) { //userドキュメントをリスト化
-      users = snapshot.documents.map((doc) => User.formDocument(doc)).toList();
+    firestore.collection('users').get().then((snapshot) { //userドキュメントをリスト化
+      users = snapshot.docs.map((doc) => Users.formDocument(doc)).toList();
       users.sort(
           //アルファベット順に表示。これをしないと
           // Dartパッケージのalphabet_list_scroll_view.dartでエラー発生。

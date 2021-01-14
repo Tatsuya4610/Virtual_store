@@ -13,18 +13,18 @@ class Section extends ChangeNotifier {
   }
 
   Section.formDocument(DocumentSnapshot document) {
-    id = document.documentID;
-    name = document.data['name'] as String;
-    type = document.data['type'] as String;
-    items = (document.data['items'] as List ?? [])
+    id = document.id;
+    name = document.data()['name'] as String;
+    type = document.data()['type'] as String;
+    items = (document.data()['items'] as List ?? [])
         .map((map) => SectionItem.formMap(map as Map<String, dynamic>))
         .toList();
   }
 
-  final Firestore firestore = Firestore.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final FirebaseStorage storage = FirebaseStorage.instance;
-  DocumentReference get firestoreRef => firestore.document('home/$id');
-  StorageReference get storageRef => storage.ref().child('home/$id');
+  DocumentReference get firestoreRef => firestore.doc('home/$id');
+  Reference get storageRef => storage.ref().child('home/$id');
 
   String id;
   String name;
@@ -69,21 +69,21 @@ class Section extends ChangeNotifier {
     if (id == null) {
       //新規登録編集の場合はidなし。
       final doc = await firestore.collection('home').add(data);
-      id = doc.documentID;
+      id = doc.id;
     } else {
       //idがあれば、firebaseから受け取った既存の商品。
-      await firestoreRef.updateData(data);
+      await firestoreRef.update(data);
     }
 
     for (final item in items) {
       if (item.image is File) {
         //カメラやフォトギャラリーの画像はUuidでid作成しとりあえず保存。
-        final StorageUploadTask task =
+        final UploadTask task =
             storageRef.child(Uuid().v1()).putFile(item.image as File);
-        final StorageTaskSnapshot snapshot =
-            await task.onComplete; //登録した画像の情報を受け取。
+        final TaskSnapshot snapshot =
+             task.snapshot; //登録した画像の情報を受け取。
         final String url =
-            await snapshot.ref.getDownloadURL() as String; //保存された画像のダウンロードurl
+            await snapshot.ref.getDownloadURL(); //保存された画像のダウンロードurl
         item.image = url;
       }
       for (final original in originalItems) {
@@ -92,8 +92,8 @@ class Section extends ChangeNotifier {
           //直接firebaseに登録した画像。
           //編集前の元のitemsと編集された新しいitemsを比較。削除された画像がある場合
           try {
-            final ref = await storage
-                .getReferenceFromUrl(original.image as String); //削除された画像情報
+            final ref = storage
+                .ref(original.image as String); //削除された画像情報
             await ref.delete();
           } catch (e) {
             //ただし、Storageに保存されていない直接firestore.documentに画像URLを保存した場合は
@@ -109,7 +109,7 @@ class Section extends ChangeNotifier {
       //直接firestore.documentに画像URLを保存した場合、Storage削除に失敗するが、documentをupdateすれば
       //削除したImageはupdateImagesに追加されていない為、削除と同様。
       try {
-        await firestoreRef.updateData(itemsData);
+        await firestoreRef.update(itemsData);
       } catch (e) {}
     }
   }
@@ -121,7 +121,7 @@ class Section extends ChangeNotifier {
       //ドキュメントに残っていたstorage保存されている画像を削除。
       if ((item.image as String).contains('firebase')) { //直接firebaseに登録している画像
         try {
-          final ref = await storage.getReferenceFromUrl(item.image as String);
+          final ref =  storage.ref(item.image as String);
           await ref.delete();
         } catch (e) {}
       }

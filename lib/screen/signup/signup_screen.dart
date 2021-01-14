@@ -8,7 +8,7 @@ import 'package:virtual_store_flutter/screen/base/base_screen.dart';
 class SignUPScreen extends StatelessWidget {
   static const id = 'SignUPScreen';
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final User _user = User();
+  final Users _users = Users();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -31,7 +31,7 @@ class SignUPScreen extends StatelessWidget {
                 TextFormField(
                   enabled: !loading, //falseの場合入力不可。登録ボタンを押した後　firebase登録確認中は入力不可。
                   decoration: InputDecoration(hintText: '名前'),
-                  onSaved: (name) => _user.subname = name,
+                  onSaved: (name) => _users.subname = name,
                   validator: (name) {
                     if (name.isEmpty) {
                       return '入力してください';
@@ -48,7 +48,7 @@ class SignUPScreen extends StatelessWidget {
                 TextFormField(
                   enabled: !loading, //falseの場合入力不可。登録ボタンを押した後　firebase登録確認中は入力不可。
                   decoration: InputDecoration(hintText: '名前ふりがな'),
-                  onSaved: (name) => _user.name = name,
+                  onSaved: (name) => _users.name = name,
                   validator: (name) {
                     if (name.isEmpty) {
                       return '入力してください';
@@ -67,7 +67,7 @@ class SignUPScreen extends StatelessWidget {
                   decoration: InputDecoration(hintText: 'メールアドレス'),
                   keyboardType: TextInputType.emailAddress,
                   autocorrect: false,
-                  onSaved: (email) => _user.email = email,
+                  onSaved: (email) => _users.email = email,
                   validator: (email) {
                     if (email.isEmpty) {
                       return '入力してください';
@@ -85,7 +85,7 @@ class SignUPScreen extends StatelessWidget {
                   enabled: !loading,
                   decoration: InputDecoration(hintText: 'パスワード'),
                   obscureText: true,
-                  onSaved: (pass) => _user.password = pass,
+                  onSaved: (pass) => _users.password = pass,
                   validator: (pass) {
                     if (pass.isEmpty) {
                       return '入力してください';
@@ -102,7 +102,7 @@ class SignUPScreen extends StatelessWidget {
                   enabled: !loading,
                   decoration: InputDecoration(hintText: '確認パスワード'),
                   obscureText: true,
-                  onSaved: (pass) => _user.confirmPassword = pass,
+                  onSaved: (pass) => _users.confirmPassword = pass,
                   validator: (pass) {
                     if (pass.isEmpty) {
                       return '入力してください';
@@ -126,7 +126,7 @@ class SignUPScreen extends StatelessWidget {
                     onPressed:loading ? null : () {
                       if (_formKey.currentState.validate()) {
                         _formKey.currentState.save(); //validate問題なければ保存。
-                        if (_user.password != _user.confirmPassword) {
+                        if (_users.password != _users.confirmPassword) {
                           //確認パスワードが違う確認し警告。
                           _scaffoldKey.currentState.showSnackBar(
                             SnackBar(
@@ -138,7 +138,7 @@ class SignUPScreen extends StatelessWidget {
                           return;
                         }
                         context.read<UserManager>().singUp( //firebaseへサインアップ。
-                              user: _user,
+                              user: _users,
                               onFail: (error) { //日本変換されたエラー受け取り、SnackBar表示。
                                 _scaffoldKey.currentState.showSnackBar(
                                   SnackBar(

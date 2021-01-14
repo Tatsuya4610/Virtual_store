@@ -6,13 +6,13 @@ enum StoreStatus { closed, open, closing }
 
 class Store {
   Store.formDocument(DocumentSnapshot doc) {
-    name = doc.data['name'] as String;
-    image = doc.data['image'] as String;
-    phone = doc.data['phone'] as int;
-    address = doc.data['address'] as String;
-    lat = doc.data['lat'] as double;
-    lon = doc.data['lon'] as double;
-    opening = (doc.data['opening'] as Map<String, dynamic>).map((key, value) {
+    name = doc.data()['name'] as String;
+    image = doc.data()['image'] as String;
+    phone = doc.data()['phone'] as int;
+    address = doc.data()['address'] as String;
+    lat = doc.data()['lat'] as double;
+    lon = doc.data()['lon'] as double;
+    opening = (doc.data()['opening'] as Map<String, dynamic>).map((key, value) {
       final timesString = value as String;
       if (timesString != null && timesString.isNotEmpty) {
         final splitted = timesString

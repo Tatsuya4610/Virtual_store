@@ -4,7 +4,7 @@ import 'package:virtual_store_flutter/model/item_size.dart';
 import 'package:virtual_store_flutter/model/product.dart';
 
 class CartProduct with ChangeNotifier {
-  final Firestore firestore = Firestore.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   CartProduct.formProduct(this._product) {
     //元々ログインしていた、直接のカート追加分。
@@ -15,12 +15,12 @@ class CartProduct with ChangeNotifier {
 
   CartProduct.formDocument(DocumentSnapshot cartSnapDoc) {
     //firebaseから受け取ったユーザー別のカートドキュメントをProductへ変換。//別のログインユーザー分
-    cartId = cartSnapDoc.documentID;
+    cartId = cartSnapDoc.id;
     cartProductId = cartSnapDoc['productDocId']; //商品のドキュメントID。
     quantity = cartSnapDoc['quantity'];
     size = cartSnapDoc['size'];
 
-    Firestore.instance.document('products/$cartProductId').get().then((doc) {
+    FirebaseFirestore.instance.doc('products/$cartProductId').get().then((doc) {
       products = Product.fromDocument(doc);
     }); //商品のドキュメント情報。
   }
@@ -30,7 +30,7 @@ class CartProduct with ChangeNotifier {
     quantity = map['quantity'] as int;
     size = map['size'] as String;
     productPrice = map['productPrice'] as num;
-    firestore.document('products/$orderProductId').get().then((doc) {
+    firestore.doc('products/$orderProductId').get().then((doc) {
       //注文履歴呼び出し時にそのカートのproduct情報を受け取っておく。
       _product = Product.fromDocument(doc);
     });

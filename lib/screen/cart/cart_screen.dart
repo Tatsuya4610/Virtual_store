@@ -19,7 +19,7 @@ class CartScreen extends StatelessWidget {
       ),
       body: Consumer<CartManager>(
         builder: (_, cartManager, __) {
-          if (cartManager.user == null) {
+          if (cartManager.users == null) {
             return LoginCard(); //ログインしていない場合は
           }
           if (cartManager.items.isEmpty) { //カートに何もない場合は空カート画面

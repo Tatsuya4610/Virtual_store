@@ -13,19 +13,19 @@ class Product extends ChangeNotifier {
   }
 
   Product.fromDocument(DocumentSnapshot document) {
-    id = document.documentID;
+    id = document.id;
     name = document['name'];
     description = document['description'];
-    images = List<String>.from(document.data['images']);
-    deleted = (document.data['deleted'] ?? false) as bool;
-    sizes = (document.data['sizes'] as List<dynamic> ?? []) //全ての商品にfirebase上にsizesが登録されていない場合、mapでnullが返される為、??[]でもしくは0と表現要。
+    images = List<String>.from(document.data()['images']);
+    deleted = (document.data()['deleted'] ?? false) as bool;
+    sizes = (document.data()['sizes'] as List<dynamic> ?? []) //全ての商品にfirebase上にsizesが登録されていない場合、mapでnullが返される為、??[]でもしくは0と表現要。
         .map((sizeMap) => ItemSize.formMap(sizeMap as Map<String, dynamic>))
         .toList();
   }
 
-  final Firestore firestore = Firestore.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final FirebaseStorage storage = FirebaseStorage.instance;
-  StorageReference get storageRef => storage.ref().child('products').child(id);
+  Reference get storageRef => storage.ref().child('products').child(id);
   //firebaseStorageにproductsのフォルダーを作成し、そこに商品Id別に保存。
 
   String id;
@@ -110,9 +110,9 @@ class Product extends ChangeNotifier {
     };
     if (id == null) { //新規登録編集の場合はidなし。
       final doc = await firestore.collection('products').add(data);
-      id = doc.documentID;
+      id = doc.id;
     } else {//idがあれば、firebaseから受け取った既存の商品。
-      await firestore.document('products/$id').updateData(data);
+      await firestore.doc('products/$id').update(data);
     }
 
     //ここから下はImageの保存。
@@ -125,9 +125,9 @@ class Product extends ChangeNotifier {
         updateImages.add(newImage as String);
       } else {
         //既存のImage以外の新しく追加されたImageはStorageへ保存。UuidでId付きFile。
-        final StorageUploadTask task = storageRef.child(Uuid().v1()).putFile(newImage as File);
-        final StorageTaskSnapshot snapshot = await task.onComplete; //アップロード(保存)待ち。
-        final String url = await snapshot.ref.getDownloadURL() as String; //ダウンロードする為のURL
+        final UploadTask task = storageRef.child(Uuid().v1()).putFile(newImage as File);
+        final TaskSnapshot snapshot = task.snapshot; //アップロード(保存)待ち。
+        final String url = await snapshot.ref.getDownloadURL(); //ダウンロードする為のURL
         updateImages.add(url); //新しく追加されたImageはStorageに保存後にダウンロードURLを取得し、そのURLを追加する。
       }
     }
@@ -136,7 +136,7 @@ class Product extends ChangeNotifier {
       if (!newImage.contains(image) && image.contains('firebase')) { //&& image.contains('firebase')、直接firebaseに追加した画像用
         try {
           //編集された新しいImageリストに含まれていない既存のImage。(削除されたImage)
-          final ref = await storage.getReferenceFromUrl(
+          final ref = storage.ref(
               image); //削除されたStorageに保存されているImageのURL情報を取得
           await ref.delete(); //削除。
         } catch (e) {
@@ -146,7 +146,7 @@ class Product extends ChangeNotifier {
         }
       }
     }
-    await firestore.document('products/$id').updateData({'images' : updateImages});
+    await firestore.doc('products/$id').update({'images' : updateImages});
     //直接firestore.documentに画像URLを保存した場合、Storage削除に失敗するが、documentをupdateすれば
     //削除したImageはupdateImagesに追加されていない為、削除と同様。
 
@@ -156,7 +156,7 @@ class Product extends ChangeNotifier {
 
   void delete(){
     //firebaseにdeletedを設けて、見かけ上で削除する。
-    firestore.document('products/$id').updateData({'deleted' : true});
+    firestore.doc('products/$id').update({'deleted' : true});
     // firestore.document('products/$id').delete(); これで完全にデータ削除出来るが、購入履歴やカート内で
     //情報が受け取れずエラーになる為上記はしない。
   }

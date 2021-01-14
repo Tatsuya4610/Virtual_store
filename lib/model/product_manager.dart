@@ -37,13 +37,13 @@ class ProductManager extends ChangeNotifier {
   }
 
   Future<void> _loadAllProduct() async {
-    final QuerySnapshot snapProducts = await Firestore.instance
+    final QuerySnapshot snapProducts = await FirebaseFirestore.instance
         .collection('products')
         .where('deleted', isEqualTo: false) //deleted、trueは呼び出さない。
-        .getDocuments();
+        .get();
 
     _allProducts = //productsのドキュメントの中にある情報(List)別をfromDocumentで個々に受け取り。
-        snapProducts.documents.map((doc) => Product.fromDocument(doc)).toList();
+        snapProducts.docs.map((doc) => Product.fromDocument(doc)).toList();
     notifyListeners();
 
     // for(DocumentSnapshot doc in snapProducts.documents) { //productsのdocumentsの数、全ての情報を取得。

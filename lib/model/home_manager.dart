@@ -13,14 +13,14 @@ class HomeManager extends ChangeNotifier {
   bool editing = false;
   bool loading = false;
 
-  final Firestore firestore = Firestore.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   Future<void> _loadSections() async {//posの番号順に取得。
     firestore.collection('home').orderBy('pos').snapshots().listen(
       (snapshot) {
         //getDocumentではsnapshotはfirebase上で更新があれば通知。
         _sections.clear(); //更新時に一度クリアのち取得。
-        for (DocumentSnapshot document in snapshot.documents) {
+        for (DocumentSnapshot document in snapshot.docs) {
           //ホームに入ったドキュメントを全て取得。
           _sections.add(Section.formDocument(
               document)); //documentをformDocumentに渡し、firebaseからデーター抽出。リストへ

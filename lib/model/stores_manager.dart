@@ -13,11 +13,11 @@ class StoresManager extends ChangeNotifier {
   List<Store> stores = [];
   Timer _timer;
 
-  final Firestore firestore = Firestore.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   Future<void> _loadStoresList() async {
-    final snapshot = await firestore.collection('stores').getDocuments();
-    stores = snapshot.documents.map((doc) => Store.formDocument(doc)).toList();
+    final snapshot = await firestore.collection('stores').get();
+    stores = snapshot.docs.map((doc) => Store.formDocument(doc)).toList();
     notifyListeners();
   }
 

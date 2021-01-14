@@ -29,7 +29,7 @@ class Postal extends ChangeNotifier {
     notifyListeners();
   }
 
-  Firestore firestore = Firestore.instance;
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   Future<void> getAddress(String postalCode) async {
     _addressGet = false;

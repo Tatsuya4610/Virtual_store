@@ -6,20 +6,20 @@ import 'package:virtual_store_flutter/model/user.dart';
 
 class AdminOrderManager extends ChangeNotifier {
   final List<Order> _orders = [];
-  User userFilter;
+  Users usersFilter;
   List<Status> statusFilter = [];
 
   List<Order> get filterOrders { //ユーザーごとにフィルターされたOrder
     List<Order> output = _orders.reversed.toList();
-    if (userFilter != null) {
-      output = output.where((element) => element.userId == userFilter.id).toList();
+    if (usersFilter != null) {
+      output = output.where((element) => element.userId == usersFilter.id).toList();
     }
 
     output = output.where((element) => statusFilter.contains(element.status)).toList();//statusごとのフィルター。
     return output;
   }
 
-  final Firestore firestore = Firestore.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
   StreamSubscription _subscription;
 
   void updateAdmin(bool adminEnabled) {
@@ -33,17 +33,17 @@ class AdminOrderManager extends ChangeNotifier {
   void _listenToOrders() {
     //全ての注文を取得。
     _subscription = firestore.collection('orders').snapshots().listen((event) {
-      for (final change in event.documentChanges) {
+      for (final change in event.docChanges) {
         //document(snapshots)で変更があった場合、なんでもかんでも受け取るのではなく、
         //documentの変更Type、内容別で分ける。
         switch (change.type) {
           case DocumentChangeType.added: //追加された場合
-            _orders.add(Order.fromDocument(change.document));
+            _orders.add(Order.fromDocument(change.doc));
             break;
           case DocumentChangeType.modified: //変更された場合。今回の場合status[index]変更時
             final changeOrder = _orders
-                .firstWhere((ord) => ord.orderId == change.document.documentID);
-            changeOrder.updateFromDocument(change.document); //変更があったorderを更新。
+                .firstWhere((ord) => ord.orderId == change.doc.id);
+            changeOrder.updateFromDocument(change.doc); //変更があったorderを更新。
             break;
           case DocumentChangeType.removed: //消された場合。今回は消すことない為スルー。
             break;
@@ -58,8 +58,8 @@ class AdminOrderManager extends ChangeNotifier {
     });
   }
 
-  void setUserFilter(User user) {
-    userFilter = user;
+  void setUserFilter(Users users) {
+    usersFilter = users;
     notifyListeners();
   }
 

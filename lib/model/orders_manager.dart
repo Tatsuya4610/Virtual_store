@@ -6,18 +6,18 @@ import 'package:virtual_store_flutter/model/order.dart';
 import 'package:virtual_store_flutter/model/user.dart';
 
 class OrdersManager extends ChangeNotifier {
-  User user;
+  Users users;
 
   List<Order> orders = [];
 
-  final Firestore firestore = Firestore.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
   StreamSubscription _subscription;
 
-  void updateUser(User user) {
-    this.user = user;
+  void updateUser(Users users) {
+    this.users = users;
     orders.clear(); //保証でここでもクリア。
     _subscription?.cancel(); //以前の_listenToOrders、snapshotを停止。
-    if (user != null) {
+    if (users != null) {
       _listenToOrders();
     }
   }
@@ -25,11 +25,11 @@ class OrdersManager extends ChangeNotifier {
   void _listenToOrders() { //userごとの注文を取得。
     _subscription = firestore
         .collection('orders')
-        .where('user', isEqualTo: user.id)
+        .where('user', isEqualTo: users.id)
         .snapshots()
         .listen((event) {
       orders.clear(); //userが変わるたびにカートクリアし、際取得。
-      for (final doc in event.documents) {
+      for (final doc in event.docs) {
         orders.add(Order.fromDocument(doc));
       }
       notifyListeners();

@@ -11,30 +11,30 @@ enum Status {
 
 class Order {
   Order.fromDocument(DocumentSnapshot doc) {
-    orderId = doc.documentID;
-    price = doc.data['price'] as num;
-    userId = doc.data['user'] as String;
-    date = doc.data['date'] as Timestamp;
-    items = (doc.data['items'] as List<dynamic>).map((e) {
+    orderId = doc.id;
+    price = doc.data()['price'] as num;
+    userId = doc.data()['user'] as String;
+    date = doc.data()['date'] as Timestamp;
+    items = (doc.data()['items'] as List<dynamic>).map((e) {
       return CartProduct.fromMap(e as Map<String, dynamic>);
     }).toList();
-    status = Status.values[doc.data['status'] as int];
+    status = Status.values[doc.data()['status'] as int];
   }
 
   Order.fromCartManager(CartManager cartManager) {
     items = List.from(cartManager.items);
     price = cartManager.productsPrice;
-    userId = cartManager.user.id;
+    userId = cartManager.users.id;
     status = Status.preparing;
   }
 
   void updateFromDocument(DocumentSnapshot doc) {
-    status = Status.values[doc.data['status'] as int];
+    status = Status.values[doc.data()['status'] as int];
   }
 
-  final Firestore firestore = Firestore.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
   Future<void> save() async {
-    firestore.collection('orders').document(orderId).setData({
+    firestore.collection('orders').doc(orderId).set({
       'items': items.map((e) => e.toOrderItemMap()).toList(),
       'price': price,
       'user': userId,
@@ -63,26 +63,26 @@ class Order {
 
   void cancel() { //キャンセル
     status = Status.cancel;
-    firestore.collection('orders').document(orderId).updateData({
+    firestore.collection('orders').doc(orderId).update({
       'status' : status.index
     });
   }
   void done() { //完了
     status = Status.delivered;
-    firestore.collection('orders').document(orderId).updateData({
+    firestore.collection('orders').doc(orderId).update({
       'status' : status.index
     });
   }
 
   void preparing() { //準備
     status = Status.preparing;
-    firestore.collection('orders').document(orderId).updateData({
+    firestore.collection('orders').doc(orderId).update({
       'status' : status.index
     });
   }
   void transporting() { //配達
     status = Status.transporting;
-    firestore.collection('orders').document(orderId).updateData({
+    firestore.collection('orders').doc(orderId).update({
       'status' : status.index
     });
   }
