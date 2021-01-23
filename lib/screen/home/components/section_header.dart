@@ -13,6 +13,7 @@ class SectionHeader extends StatelessWidget {
     if (homeManager.editing) {
       return Column(
         children: <Widget>[
+          Text('画像長押しでリンクまたは削除可能',style: TextStyle(color: Colors.white),),
           Row(
             children: <Widget>[
               Expanded(
