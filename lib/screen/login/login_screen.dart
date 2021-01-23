@@ -39,7 +39,7 @@ class LoginScreen extends StatelessWidget {
                   shrinkWrap: true, //最小限に画面を占領する。
                   padding: EdgeInsets.all(16),
                   children: <Widget>[
-                    Text('管理者メールアドレス、test@test.com パスワード 1234567。管理者のみ編集機能やユーザー管理機能有り。お試し下さい。'),
+                    Text('管理者メールアドレス、test@test.com パスワード 1234567。管理者のみ編集機能やユーザー管理機能有り。お試し下さい。アカウント作成可能。'),
                     SizedBox(height: 4,),
                     TextFormField(
                       enabled: !userManager

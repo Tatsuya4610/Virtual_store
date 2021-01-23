@@ -36,7 +36,7 @@ class SignUPScreen extends StatelessWidget {
                     if (name.isEmpty) {
                       return '入力してください';
                     } else if (name.trim().split('　').length <= 1) {
-                      return 'フルネームを入力してください';
+                      return 'フルネームを入力してください。余白必要です';
                     } else {
                       return null;
                     }
