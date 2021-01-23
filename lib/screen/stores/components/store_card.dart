@@ -118,6 +118,7 @@ class StoreCard extends StatelessWidget {
                             color: Theme.of(context).primaryColor,
                             onTap: openMap,
                           ),
+                          Text('マップ開けます',style: TextStyle(fontSize: 10),),
                         ],
                       ),
                       Text('TEL: ${store.phone.toString()}'),

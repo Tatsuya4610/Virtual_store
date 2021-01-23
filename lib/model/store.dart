@@ -48,7 +48,7 @@ class Store {
   String get openingText {
     return '月曜日〜金曜 : ${formattedPeriod(opening['monfri'])}\n'
         '土曜日 : ${formattedPeriod(opening['saturday'])}\n'
-        '日曜、祝日 : お休み';
+        '日曜 : お休み';
   }
 
   String formattedPeriod(Map<String, TimeOfDay> period) {

@@ -65,24 +65,29 @@ class UserManager extends ChangeNotifier {
   }
 
   Future<void> _loadCurrentUser({User firebaseUser}) async {
-    final User currentUser = _auth.currentUser ?? firebaseUser; //ログイン中のアカウント。この2つどちらか。
-    if (currentUser != null) {
-      final DocumentSnapshot docUser = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(currentUser.uid)
-          .get(); //ログイン中のアカウントのデータを取得。
-      users = Users.formDocument(docUser); //取得したデーターをformDocumentに登録。
-      users.saveToken();
+    try {
+      final User currentUser = _auth.currentUser ??
+          firebaseUser; //ログイン中のアカウント。この2つどちらか。
+      if (currentUser != null) {
+        final DocumentSnapshot docUser = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(currentUser.uid)
+            .get(); //ログイン中のアカウントのデータを取得。
+        users = Users.formDocument(docUser); //取得したデーターをformDocumentに登録。
+        users.saveToken();
 
-      final docAdmin = await FirebaseFirestore.instance
-          .collection('admin')
-          .doc(users.id)
-          .get();
-      if (docAdmin.exists) {
-        //ログインしたuserがAdmin(管理者)として登録されていたら。
-        users.admin = true;
+        final docAdmin = await FirebaseFirestore.instance
+            .collection('admin')
+            .doc(users.id)
+            .get();
+        if (docAdmin.exists) {
+          //ログインしたuserがAdmin(管理者)として登録されていたら。
+          users.admin = true;
+        }
+        notifyListeners();
       }
-      notifyListeners();
+    } catch (e) {
+
     }
   }
 

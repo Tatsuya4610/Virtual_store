@@ -42,9 +42,12 @@ class ProductManager extends ChangeNotifier {
         .where('deleted', isEqualTo: false) //deleted、trueは呼び出さない。
         .get();
 
-    _allProducts = //productsのドキュメントの中にある情報(List)別をfromDocumentで個々に受け取り。
-        snapProducts.docs.map((doc) => Product.fromDocument(doc)).toList();
-    notifyListeners();
+    try {
+      _allProducts = //productsのドキュメントの中にある情報(List)別をfromDocumentで個々に受け取り。
+      snapProducts.docs.map((doc) => Product.fromDocument(doc)).toList();
+      notifyListeners();
+    } catch (e) {
+    }
 
     // for(DocumentSnapshot doc in snapProducts.documents) { //productsのdocumentsの数、全ての情報を取得。
     //   print(doc.data);

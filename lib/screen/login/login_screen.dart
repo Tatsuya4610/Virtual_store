@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:virtual_store_flutter/helper/valid.dart';
 import 'package:provider/provider.dart';
 import 'package:virtual_store_flutter/model/user_manager.dart';
@@ -38,6 +39,8 @@ class LoginScreen extends StatelessWidget {
                   shrinkWrap: true, //最小限に画面を占領する。
                   padding: EdgeInsets.all(16),
                   children: <Widget>[
+                    Text('管理者メールアドレス、test@test.com パスワード 1234567。管理者のみ編集機能やユーザー管理機能有り。お試し下さい。'),
+                    SizedBox(height: 4,),
                     TextFormField(
                       enabled: !userManager
                           .loading, //falseの場合入力不可。ログインボタンを押した後　firebaseログイン確認中は入力不可。
