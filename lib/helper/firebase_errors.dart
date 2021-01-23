@@ -1,7 +1,7 @@
 String getErrorString(String code){
   //PlatformExceptionでフリーズ。
   //PlatformExceptionをキャッチできないように見えるが実際はキャッチできている。
-  //対応策、AndroidStudio > 実行 > ブレークポイント表示 > Break on exceptionsを使用可能にチェック。
+  //対応策、AndroidStudio > 実行 > ブレークポイント表示 > Break on exceptionsを使用可能にチェック。中断にチェックなし。
   //https://python5.com/q/rkqqyfobを参照。その他ページも該当操作推進。
   switch (code) {
     case 'weak-password':
